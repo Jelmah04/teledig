@@ -1,5 +1,6 @@
 venv
 env
+# have deleted env in this project, only venv remaining
 *migrations
 migrations
 *_pycache_
