@@ -43,15 +43,11 @@
             Amount to FUND between N100 to N2450
           </h6>
 
-          <form action="{% url 'webhook' %}" method="POST"> 
-            {% csrf_token %}
+          <form> 
           <div class="topay">
-            <input type="hidden" class="form-control input-lg" name="email" value="{{request.user.email}}">
-            <input type="hidden" class="form-control input-lg" name="phonenumber" value="">
-            <input type="hidden" class="form-control input-lg" name="refcode" value=""> 
-            <input type="number" style="width: 100%; margin: 0 auto;" name="payamount" id="payamount" placeholder="Input the amount to be funded in Naira" required><br><br>
+            <input type="number" style="width: 100%; margin: 0 auto;" id="amount" placeholder="Input the amount to be funded in Naira" required><br><br>
               <center>
-                <button style="width: 90%; margin:0 auto;" class="btn btn-success">Make Payment</button>
+                <button type="submit" id="btn-pay" style="width: 90%; margin:0 auto;" class="btn btn-success">Make Payment</button>
               </center>
           </div>
           </form>
@@ -89,6 +85,50 @@
 
 
 
+
+<script src="/static/libs/jquery/jquery.min.js"></script>
+<script src="https://js.paystack.co/v1/inline.js"></script>
+<script type="text/javascript">
+  const paymentForm = document.getElementById('btn-pay');
+  paymentForm.addEventListener("click", payWithPaystack, false);
+
+  function payWithPaystack(e) {
+        e.preventDefault();
+        var user_amount = $("#amount").val();
+        let handler = PaystackPop.setup({
+            key: '{{ paystack_key }}', // Replace with your public key
+            email: '{{ user.email }}',
+            amount: user_amount * 100,
+            ref: ''+Math.floor((Math.random() * 1000000000) + 1), // generates a pseudo-unique reference. Please replace with a reference you generated. Or remove the line entirely so our API will generate one for you
+            // label: "Optional string that replaces customer email"
+            onClose: function(){
+                alert('Payment Cancelled.');
+            },
+            callback: function(response){
+              console.log(response);
+                $.ajax({
+                    url: 'http://localhost:90/verify_transaction?reference='+ response.reference,
+                    method: 'get',
+                    success: function (res) {
+                      console.log(res);
+                        // the transaction status is in response.data.status
+                        if(res.data.status == 'success') {
+                            let message = 'Payment completed!    Thanks.\n \n \nClick OK to Continue';
+                            alert(message);
+                            // location.reload();
+                        } else {
+                            let message = 'Payment was not completed! Click OK to Try Again';
+                            alert(message);
+                            // location.reload();
+                        }
+                    }
+                });
+                
+            }
+        });
+        handler.openIframe();
+    }
+</script>
 
 {% endblock maintwo %}
 
