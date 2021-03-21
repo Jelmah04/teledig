@@ -17,7 +17,7 @@
     <h5><a href="#need">Purchase Services</a></h5>
     <h5><a href="{% url 'login' %}">Funding</a></h5>
     <h6 id="greetings">
-        <p style="color: greenyellow;">Welcome, {{request.user.username}}</p>
+        <p style="color: greenyellow;">Welcome, {{request.user.first_name.capitalize}}</p>
       {% comment %} {% if request.user.is_authenticated %} {% endcomment %}
         {% comment %} <p style="color: greenyellow;">Welcome, {{request.user.username}}</p> {% endcomment %}
       {% comment %} {% endif %} {% endcomment %}
@@ -30,7 +30,7 @@
       <span id="recordspan2" class="recordspan"></span>
       <i class="fas fa-qrcode"></i><br>
       <!-- <h5># {{nbalance | intcomma}} </h4> -->
-      <p>Wallet Balance: <span>&#8358</span> {{userwallet.amount}}</p>          
+      <p>Wallet Balance: <span>&#8358</span> {{ user_wallet }}</p>          
       <p>Previous Balance: <span>&#8358</span>{{obalance}}</p>
     </div>
     <div class="records ttt">

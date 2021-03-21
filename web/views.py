@@ -9,6 +9,7 @@ from django.contrib import auth
 from .serializers import RegisterSerializer
 from .forms import SignUpForm
 import datetime
+from decimal import Decimal
 from datetime import timedelta
 from datetime import datetime as dt
 import os
@@ -50,7 +51,12 @@ today = datetime.date.today()
 def home(request):
 	return render(request, 'index.html')
 
+def index(request):
+	return render(request, 'dashboard.html')
+
 def signin(request):
+	if request.user.is_authenticated:
+		return redirect('index')
 	return render(request, 'login.html')
 
 
@@ -60,7 +66,6 @@ def signin_ajax(request):
 		password = request.POST.get('password', None)
 
 		user = auth.authenticate(email=email, password=password)
-		print(user)
 		if user is not None:
 			auth.login(request, user)
 			response = {'success': 'Login Successfully. You will be redirect now.'}
@@ -291,7 +296,13 @@ def change_password (request):
 
 
 def dashboard (request):
-	return render (request, 'dashboard.html')
+	user_wallet = UserWallet.objects.get(user=request.user)
+	pay_history = PayHistory.objects.filter(user=request.user)
+	context = {
+		'user_wallet': user_wallet.amount,
+		'pay_history': pay_history
+	}
+	return render (request, 'dashboard.html', context)
 
 def services (request):
 	return render (request, 'services.html')
@@ -315,7 +326,29 @@ def profile (request):
 	return render (request, 'profile.html')
 
 def funding (request):
-	return render (request, 'funding.html')
+	context = {
+		'paystack_key': settings.PAYSTACK_PUBLIC_KEY
+	}
+	return render (request, 'funding.html', context)
+
+class Verify_Payment(APIView):
+	def get(self, request):
+		user = request.user
+		reference = request.GET.get("reference")
+		url = 'https://api.paystack.co/transaction/verify/'+reference
+		headers = {
+			"Authorization": "Bearer " +settings.PAYSTACK_SECRET_KEY
+		}
+		x = requests.get(url, headers=headers)
+		if x.json()['status'] == False:
+			return False
+		results = x.json()
+		PayHistory.objects.create(user=user, paystack_charge_id=results["data"]["reference"], amount=results["data"]["amount"], paid=True)
+		current_wallet = UserWallet.objects.get(user=user)
+		current_wallet.amount += (results["data"]["amount"] /Decimal(100))
+		current_wallet.save()
+
+		return Response(results)
 
 # @csrf_exempts
 def contact (request):

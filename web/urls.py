@@ -4,11 +4,13 @@ from django.conf.urls import url
 from django.contrib.auth import views as auth_views
 from django.urls import path, re_path
 from django.conf import settings
+from .views import Verify_Payment
 
 from . import views
 
 urlpatterns = [
     url(r'^$', views.home, name='home'),
+    # url(r'^dashboard/$', views.index, name='index'),
 
     # url(r'^send-confirm-mail/$', views.send_confirm_email_ajax, name='send_confirm_email_ajax'),
     url(r'^confirm-mail/$', views.confirm_email_ajax, name='confirm_email_ajax'),
@@ -48,6 +50,7 @@ urlpatterns = [
     url(r'contact', views.contact, name='contact'),
     url(r'wallet', views.wallet, name='wallet'),
     url(r'funding', views.funding, name='funding'),
+    url(r'^verify_transaction', Verify_Payment.as_view(), name='verify_transaction'),
     url(r'profile', views.profile, name='profile'),
     url(r'transactionhistory', views.transactionhistory, name='transactionhistory'),
     url(r'data', views.data, name='data'),
