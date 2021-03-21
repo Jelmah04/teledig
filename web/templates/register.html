@@ -218,13 +218,15 @@
                 last_name : $('#last_name').val(),
                 email : $('#email').val(),
                 username : $('#username').val(),
-                country_code : $('#countryCode').val(),
                 mobile : $('#mobile').val(),
                 password1 : $('#password1').val(),
                 password2 : $('#password2').val(),
                 csrfmiddlewaretoken: '{{ csrf_token }}',
                 dataType: "json",
 
+               },
+               beforeSend(){
+                console.log(new FormData());
                },
                
                success: function(data){

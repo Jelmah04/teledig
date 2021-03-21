@@ -60,6 +60,7 @@ def signin_ajax(request):
 		password = request.POST.get('password', None)
 
 		user = auth.authenticate(email=email, password=password)
+		print(user)
 		if user is not None:
 			auth.login(request, user)
 			response = {'success': 'Login Successfully. You will be redirect now.'}
@@ -123,15 +124,17 @@ def register(request):
 def register_ajax(request):
 	if request.is_ajax():
 		form = SignUpForm(request.POST)
+		print(form)
+		print(request.POST)
 		if form.is_valid():
 			form.save()
 			obj = form.save()
-			otp = generateOTP()
+			otp_code = generateOTP()
 			site_name = settings.SITE_NAME
 			full_name = obj.first_name + ' ' + obj.last_name
 
 			subject_file = os.path.join(settings.BASE_DIR, "mail/register/subject.txt")
-			subject = render_to_string(subject_file, {'name': obj.first_name, 'site_name': obj.site_name})
+			subject = render_to_string(subject_file, {'name': obj.first_name, 'site_name': site_name})
 			from_email = settings.DEFAULT_EMAIL_SENDER
 			to_email = [obj.email]
 
@@ -152,12 +155,10 @@ def register_ajax(request):
 			message.attach_alternative(template, "text/html")
 
 			message.send()
-			# sms_number = obj.mobile[1:]
-			# send_sms = client.messages.create(
-			# 			body='<#> Thanks for joining '+site_name+'.\nYour OTP is:'+otp+'.',
-			# 			from_='+12056221814',
-			# 			to='+234'+sms_number
-			# )
+			UserSettings.objects.create(
+				user=obj,
+				verified_code=otp_code
+			)
 			response = {'success': 'Registration successful. Kindly enter the OTP sent to your email address. ['+obj.email+']'}
 			return JsonResponse(response)
 		else:
@@ -166,30 +167,6 @@ def register_ajax(request):
 	else:
 		response = {'error': 'Please check all fields and try again.'}
 		return JsonResponse(response)
-
-# def register_ajax(request):
-	# if request.is_ajax():
-		# form = SignUpForm(request.POST)
-		# if form.is_valid():
-			# form.save()
-			# obj = form.save()
-			# otp = generateOTP()
-			# site_name = settings.SITE_NAME
-			# full_name = obj.first_name + ' ' + obj.last_name
-			# sms_number = obj.mobile[1:]
-			# send_sms = client.messages.create(
-						# body='<#> Thanks for joining '+site_name+'.\nYour OTP is:'+otp+'.',
-						# from_='+12056221814',
-						# to='+234'+sms_number
-			# )
-			# response = {'success': 'Registration successful. Kindly enter the OTP sent to you on the next screen.'}
-			# return JsonResponse(response)
-		# else:
-			# response = {'error': 'We could not process your request. Try again.'}
-			# return JsonResponse(response)
-	# else:
-		# response = {'error': 'Please check all fields and try again.'}
-		# return JsonResponse(response)
 
 
 def verifyAccount(request):
@@ -200,11 +177,12 @@ def confirm_email_ajax(request):
 	if request.is_ajax():
 		otp_code = request.POST.get('otp_code', None)
 		if otp_code:
-			check_code = AlertVerify.objects.filter(sms_code=otp_code).exists()
+			check_code = UserSettings.objects.filter(verified_code=otp_code).exists()
 			if check_code:
-				get_settings = UserSettings.objects.get(user=request.user)
-				instance = UserSettings.objects.filter(id=get_settings.id).update(sms_verified=True, sms=True)
-				User.objects.filter(user=instance.user)
+				# get_user = UserSettings.objects.get(verified_code=otp_code)
+				get_settings = UserSettings.objects.get(verified_code=otp_code)
+				instance = UserSettings.objects.filter(id=get_settings.id).update(account_verified=True, code_expired=True)
+				# User.objects.filter(user=instance.user)
 				if instance:
 					response = {
 								 'success': 'Account Verified Successfully' # response message
