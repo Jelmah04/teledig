@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from rest_framework import response
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -52,7 +53,16 @@ def home(request):
 	return render(request, 'index.html')
 
 def index(request):
-	return render(request, 'dashboard.html')
+	user_wallet = UserWallet.objects.get(user=request.user)
+	pay_history = PayHistory.objects.filter(user=request.user)
+	context = {
+		'user_wallet': user_wallet.amount,
+		'pay_history': pay_history
+	}
+	return render(request, 'home.html', context)
+
+def my_wallet(request):
+	return render(request, 'my-wallet.html')
 
 def signin(request):
 	if request.user.is_authenticated:
@@ -129,8 +139,6 @@ def register(request):
 def register_ajax(request):
 	if request.is_ajax():
 		form = SignUpForm(request.POST)
-		print(form)
-		print(request.POST)
 		if form.is_valid():
 			form.save()
 			obj = form.save()
@@ -304,6 +312,90 @@ def dashboard (request):
 	}
 	return render (request, 'dashboard.html', context)
 
+
+def service(request):
+	return render(request, 'service.html')
+
+def get_data_plan(request):
+	if request.is_ajax():
+		result = fetch_data_plan()
+		print(result)
+		response = {"success": "yeah"}
+		return JsonResponse(response)
+
+def data_service(request):
+	return render (request, 'datas.html')
+
+def data_purchase(request):
+	if request.is_ajax():
+		network = request.POST.get("network", None)
+		mobile = request.POST.get("mobile", None)
+		amount = request.POST.get("amount", None)
+		data_plan = request.POST.get("data_plan", None)
+		wallet = UserWallet.objects.get(user=request.user)
+		if Decimal(amount) > wallet.amount:
+			response = {'error': 'You do not have have sufficient fund in your wallet.'}
+			return JsonResponse(response)
+		url = 'https://www.alexdata.com.ng/api/topup/'
+		headers = {
+			"Authorization": "Token " +settings.ALEX_DATA_KEY,
+			'Content-Type': 'application/json'
+		}
+		datum = {
+			"network": network,
+			"mobile_number": mobile,
+			"plan": data_plan
+		}
+		x = requests.post(url, headers=headers, data=json.dumps(datum))
+		
+		# results = x.json()['success']
+		if x.status_code == 500:
+			response = {'error': "Error500: Internal Server Error"}
+		elif x.json()['detail']:
+			response = {'error': x.json()['detail']}
+		elif x.json()['error']:
+			response = {'error': x.json()['error']}
+		else:
+			response = {'success': x.json()['success']}
+			user_wallet = UserWallet.objects.get(user=request.user)
+			user_wallet.amount -= Decimal(amount)
+			user_wallet.save()
+		return JsonResponse(response)
+
+def airtime_service(request):
+	return render(request, 'airtimes.html')
+
+def airtime_purchase(request):
+	if request.is_ajax():
+		network = request.POST.get("network", None)
+		mobile = request.POST.get("mobile", None)
+		amount = request.POST.get("amount", None)
+		wallet = UserWallet.objects.get(user=request.user)
+		if Decimal(amount) > wallet.amount:
+			response = {'error': 'You do not have have sufficient fund in your wallet.'}
+			return JsonResponse(response)
+		url = 'https://www.alexdata.com.ng/api/topup/'
+		headers = {
+			"Authorization": "Token " +settings.ALEX_DATA_KEY,
+			'Content-Type': 'application/json'
+		}
+		datum = {
+			"network": network,
+			"mobile_number": mobile,
+			"amount": amount
+		}
+		x = requests.post(url, headers=headers, data=json.dumps(datum))
+		
+		# results = x.json()['success']
+		if x.json()['error']:
+			response = {'error': x.json()['error']}
+		else:
+			response = {'success': x.json()['success']}
+			user_wallet = UserWallet.objects.get(user=request.user)
+			user_wallet.amount -= Decimal(amount)
+			user_wallet.save()
+		return JsonResponse(response)
+
 def services (request):
 	return render (request, 'services.html')
 
@@ -343,29 +435,58 @@ class Verify_Payment(APIView):
 		if x.json()['status'] == False:
 			return False
 		results = x.json()
-		PayHistory.objects.create(user=user, paystack_charge_id=results["data"]["reference"], amount=results["data"]["amount"], paid=True)
+		PayHistory.objects.create(user=user, purpose="data", paystack_charge_id=results["data"]["reference"], amount=results["data"]["amount"], paid=True)
 		current_wallet = UserWallet.objects.get(user=user)
 		current_wallet.amount += (results["data"]["amount"] /Decimal(100))
 		current_wallet.save()
 
 		return Response(results)
 
-# @csrf_exempts
-def contact (request):
-	if request.method == 'POST':
-		name = request.POST['name']
-		email = request.POST['email']
-		phone = request.POST['phone']
-		subject = request.POST['subject']
-		message= request.POST['message']
 
-		contactinfo = Contactinfo(name=name,email=email,phone=phone,subject=subject,message=message)
-		contactinfo.save()
-		messages.success(request,'Your message has been sent successfully, we will get back to you soon!')
-		return redirect('contact')
-	else:
-		print('am getting sooo bored')
-	return render (request, 'contact.html')
+def contactus(request):
+	return render(request, 'contact-us.html')
+
+def contact(request):
+	if request.is_ajax():
+		name = request.POST.get('name', None)
+		email = request.POST.get('email', None)
+		phone = request.POST.get('mobile', None)
+		subject = request.POST.get('subject', None)
+		message= request.POST.get('message', None)
+
+		site_name = settings.SITE_NAME
+
+		# Let's setup variable's to add to our template
+		subject_file = os.path.join(settings.BASE_DIR, "mail/contact/subject.txt")
+		subject_1 = render_to_string(subject_file, {'name': name, 'site_name': site_name})
+		from_email = email
+		to_email = [settings.DEFAULT_EMAIL_SENDER]
+
+		contact_message_file = os.path.join(settings.BASE_DIR, "mail/contact/body.txt")
+		contact_message = render_to_string(contact_message_file, {
+													'name': name, 'email': email,
+													'phone': phone, 'subject': subject, 'message': message, 'site_name': site_name,
+												})
+
+		message_1 = EmailMultiAlternatives(subject=subject_1, body=contact_message, from_email=from_email, to=to_email)
+
+		html_template = os.path.join(settings.BASE_DIR, "mail/contact/body.html")
+		template = render_to_string(html_template, {
+													'name': name, 'email': email,
+													'phone': phone, 'subject': subject, 'message': message, 'site_name': site_name,
+													})
+
+		message_1.attach_alternative(template, "text/html")
+
+		message_1.send()
+		if message.send():
+
+			# contactinfo = Contactinfo(name=name,email=email,phone=phone,subject=subject,message=message)
+			# contactinfo.save()
+			response = {"success": "Your message has been sent successfully, we will get back to you soon!"}
+		else:
+			response = {"error": "Sorry, try again please."}
+		return JsonResponse(response)
 
 def webhook (request):
 	return render (request, 'webhook.html')

@@ -108,10 +108,18 @@ class UserSettings(models.Model):
 
 #### User Payment History
 class PayHistory(models.Model):
+	pur = (
+		("data", "Data"),
+		("airtime", "Airtime"),
+		("wallet", "Wallet"),
+		("bill", "Bill"),
+		("other", "Other")
+	)
 	user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
 	paystack_charge_id = models.CharField(max_length=100, default='', blank=True)
 	paystack_access_code = models.CharField(max_length=100, default='', blank=True)
 	amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+	purpose = models.CharField(max_length=100, default='wallet', choices=pur)
 	paid = models.BooleanField(default=False)
 	date = models.DateTimeField(auto_now_add=True)
 

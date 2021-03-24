@@ -1,0 +1,123 @@
+{% extends 'app.html' %}
+
+{% block body %}
+{% load humanize %}
+ <!-- ============================================================== -->
+            <!-- Start right Content here -->
+            <!-- ============================================================== -->
+            <div class="main-content">
+
+                <div class="page-content">
+                    <div class="container-fluid">
+
+                        <!-- start page title -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="page-title-box d-flex align-items-center justify-content-between">
+                                    <h4 class="mb-0 font-size-18">Purchase Airtime</h4>
+
+                                    <div class="page-title-right">
+                                        <ol class="breadcrumb m-0">
+                                            <li class="breadcrumb-item active"><a href="{% url 'index' %}">Home</a></li>
+                                            <li class="breadcrumb-item active"><a href="{% url 'service' %}">Services</a></li>
+                                            <li class="breadcrumb-item active">Airtime</li>
+                                        </ol>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end page title -->
+
+                        <div class="row">
+                            <div class="container w-50 h-100">
+                                <div class="row h-100 justify-content-center align-items-center">
+                                  <form class="col-12" id="airtime">
+                                    <div id="output" class="text-center font-weight-600 uppercase hide alert"></div>
+                                    <div class="form-group">
+                                        <label for="network">Select Network </label>
+                                        <select id="network" class="form-control" required>
+                                            <option disabled selected>Choose Network</option>
+                                            <option value="1">MTN NG</option>
+                                            <option value="2">GLO NG</option>
+                                            <option value="4">AIRTEL NG</option>
+                                            <option value="3">9mobile</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="mobile">Mobile Number </label>
+                                        <input type="text" pattern = "^[0]\d{10}$" maxlength="11" class="form-control" id="mobile" placeholder="090xxxxxxxx" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="amount">Amount To Recharge</label>
+                                        <input type="number" class="form-control" id="amount" placeholder="100" required>
+                                    </div>
+                                    <div class="container justify-content-center align-items-center">
+                                        <button type="submit" class="btn btn-primary waves-effect waves-light w-100">Buy Now</button>
+                                    </div>
+                                  </form>   
+                                </div>
+                              </div>                              
+                        </div>
+                    </div>
+                    <!-- container-fluid -->
+                </div>
+                <!-- End Page-content -->
+	{% include 'footer.html' %}
+
+    <script src="/static/libs/jquery/jquery.min.js"></script>
+    <script>
+        $('#airtime').on('submit', function(e){
+            e.preventDefault();
+
+            $.ajax({
+                type : "POST",
+                url: "{% url 'airtime_purchase' %}", /* django ajax posting url  */
+                data: {
+                    network : $('#network').val(),
+                    amount : $('#amount').val(),
+                    mobile : $('#mobile').val(),
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    dataType: "json",
+
+                },
+                beforeSend(){
+                    // console.log(new FormData());
+                },
+                
+                success: function(data){
+                    if (data.error){
+                        $('#airtime').find('.alert').removeClass('alert-success');
+                        $('#airtime').find('.alert').removeClass('none');
+                        $('#airtime').find('.alert').addClass('alert-warning');
+                        $('#output').html(data.error) /* response message */
+                    }
+                    else{
+                        $('#airtime').find('.alert').removeClass('alert-warning');
+                        $('#airtime').find('.alert').removeClass('none');
+                        $('#airtime').find('.alert').addClass('alert-success');
+                        $('#output').html(data.success) /* response message */
+                        // window.setTimeout(function(){
+                        //     $('#airtime').find('input[type=text], textarea').val('');
+                        // }, 700);
+                        // setTimeout(redirect, 2000);
+                        // function redirect(){
+                        // window.location.href = "{% url 'verify_account' %}";
+                        // }
+                    }
+                    
+                },
+
+                failure: function() {
+            //       console.log(typeof(data.msg));
+                    // $('.alert').html(data.msg+"hello")
+                    
+                }
+
+
+            });
+        });
+    </script>
+</div>
+
+{% endblock %}

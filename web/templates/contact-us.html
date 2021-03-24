@@ -1,0 +1,192 @@
+{% extends 'app.html' %}
+
+{% block body %}
+ <!-- ============================================================== -->
+<!-- Start right Content here -->
+<!-- ============================================================== -->
+<div class="main-content">
+
+    <div class="page-content">
+        <div class="container-fluid">
+
+            <!-- start page title -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-box d-flex align-items-center justify-content-between">
+                        <h4 class="mb-0 font-size-18">Contact Us</h4>
+
+                        <div class="page-title-right">
+                            <ol class="breadcrumb m-0">
+                                <li class="breadcrumb-item active"><a href="{% url 'index' %}">Home</a></li>
+                                <li class="breadcrumb-item active">Contact Us</li>
+                            </ol>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <!-- end page title -->
+
+            <div class="checkout-tabs">
+                <div class="row">
+                    <div class="col-lg-2">
+                        <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                            <a class="nav-link active" id="v-pills-gen-ques-tab" data-toggle="pill" href="#v-pills-gen-ques" role="tab" aria-controls="v-pills-gen-ques" aria-selected="true">
+                                <i class= "bx bx-question-mark d-block check-nav-icon mt-4 mb-2"></i>
+                                <p class="font-weight-bold mb-4">General Contact</p>
+                            </a>
+                            <a class="nav-link" id="v-pills-privacy-tab" data-toggle="pill" href="#v-pills-privacy" role="tab" aria-controls="v-pills-privacy" aria-selected="false"> 
+                                <i class= "bx bx-check-shield d-block check-nav-icon mt-4 mb-2"></i>
+                                <p class="font-weight-bold mb-4">Find Us Here</p>
+                            </a>
+                            <a class="nav-link" id="v-pills-support-tab" data-toggle="pill" href="#v-pills-support" role="tab" aria-controls="v-pills-support" aria-selected="false">
+                                <i class= "bx bx-support d-block check-nav-icon mt-4 mb-2"></i>
+                                <p class="font-weight-bold mb-4">Send Message</p>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-lg-10">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="tab-content" id="v-pills-tabContent">
+                                    <div class="tab-pane fade show active" id="v-pills-gen-ques" role="tabpanel" aria-labelledby="v-pills-gen-ques-tab">
+                                        <h4 class="card-title mb-5">General Contact</h4>
+                                        <div class="faq-box media mb-4">
+                                            <div class="faq-icon mr-3">
+                                                <i class="bx bx-help-circle font-size-20 text-success"></i>
+                                            </div>
+                                            <div class="media-body">
+                                                <h6 class="font-size-15">Telephone:</h6>
+                                                <p class="text-muted">+2348118236545</p><br>
+                                                <h6 class="font-size-15">Whatsapp:</h6>
+                                                <p class="text-muted">https://wa.me/2348118236545</p><br>
+                                            
+                                                <h6 class="font-size-15">E-mail:</h6>
+                                                <p class="text-muted">jelmah00@gmail.com</p><br>
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                    <div class="tab-pane fade" id="v-pills-privacy" role="tabpanel" aria-labelledby="v-pills-privacy-tab">
+                                        <h4 class="card-title mb-5">Meet us here</h4>
+                                        
+                                        <div class="faq-box media mb-4">
+                                            <div class="media-body">
+                                                <div class="map">
+                                                    <img width="500px" height="500px" src="/static/images/map.png" alt="">
+                                                    <!-- <input type="image" src="/static/images/map.png" alt=""> -->
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="tab-pane fade" id="v-pills-support" role="tabpanel" aria-labelledby="v-pills-support-tab">
+                                        <h4 class="card-title mb-5">Support</h4>
+                                    
+                                        <div class="faq-box media mb-4">
+                                            <div class="media-body">
+                                                <div class="container w-50 h-100">
+                                                    <div class="row h-100 justify-content-center align-items-center">
+                                                      <form class="col-12" id="contactUs">
+                                                        <div id="output" class="text-center font-weight-600 uppercase hide alert"></div>
+                                                        <div class="form-group">
+                                                            <label for="name">Your Name <small>(Required)</small></label>
+                                                            <input type="text" class="form-control" id="name" placeholder="Full Name" required>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="mobile">Email <small>(Required)</small></label>
+                                                            <input type="email" class="form-control" id="email" placeholder="Your email" required>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="mobile">Mobile <small>(Required)</small></label>
+                                                            <input type="text" pattern = "^[0]\d{10}$" maxlength="11" class="form-control" id="mobile" placeholder="090xxxxxxxx" required>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="subject">Subject</label>
+                                                            <input type="text" class="form-control" id="subject" placeholder="Subject" required>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="message">Message</label>
+                                                            <textarea class="form-control" id="message" placeholder="Your message here" required></textarea>
+                                                        </div>
+                                                        <div class="justify-content-center align-items-center">
+                                                            <button type="submit" class="btn btn-primary waves-effect waves-light w-100">Send Message</button>
+                                                        </div>
+                                                      </form>   
+                                                    </div>
+                                                  </div>  
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end row -->
+        </div>
+        <!-- container-fluid -->
+    </div>
+    <!-- End Page-content -->
+	{% include 'footer.html' %}
+
+    <script src="/static/libs/jquery/jquery.min.js"></script>
+    <script>
+        $('#contactUs').on('submit', function(e){
+            e.preventDefault();
+
+            $.ajax({
+                type : "POST",
+                url: "{% url 'contact' %}", /* django ajax posting url  */
+                data: {
+                    name : $('#name').val(),
+                    email : $('#email').val(),
+                    mobile : $('#mobile').val(),
+                    subject : $('#subject').val(),
+                    message : $('#message').val(),
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    dataType: "json",
+
+                },
+                beforeSend(){
+                    // console.log(new FormData());
+                },
+                
+                success: function(data){
+                    if (data.error){
+                        $('#contactUs').find('.alert').removeClass('alert-success');
+                        $('#contactUs').find('.alert').removeClass('none');
+                        $('#contactUs').find('.alert').addClass('alert-warning');
+                        $('#output').html(data.error) /* response message */
+                    }
+                    else{
+                        $('#contactUs').find('.alert').removeClass('alert-warning');
+                        $('#contactUs').find('.alert').removeClass('none');
+                        $('#contactUs').find('.alert').addClass('alert-success');
+                        $('#output').html(data.success) /* response message */
+                        // window.setTimeout(function(){
+                        //     $('#airtime').find('input[type=text], textarea').val('');
+                        // }, 700);
+                        // setTimeout(redirect, 2000);
+                        // function redirect(){
+                        // window.location.href = "{% url 'verify_account' %}";
+                        // }
+                    }
+                    
+                },
+
+                failure: function() {
+            //       console.log(typeof(data.msg));
+                    // $('.alert').html(data.msg+"hello")
+                    
+                }
+
+
+            });
+        });
+    </script>
+</div>
+
+{% endblock %}

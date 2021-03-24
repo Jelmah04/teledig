@@ -10,7 +10,8 @@ from . import views
 
 urlpatterns = [
     url(r'^$', views.home, name='home'),
-    # url(r'^dashboard/$', views.index, name='index'),
+    url(r'^home/$', views.index, name='index'),
+    url(r'^wallet/$', views.my_wallet, name='wallet'),
 
     # url(r'^send-confirm-mail/$', views.send_confirm_email_ajax, name='send_confirm_email_ajax'),
     url(r'^confirm-mail/$', views.confirm_email_ajax, name='confirm_email_ajax'),
@@ -46,9 +47,15 @@ urlpatterns = [
     url(r'^change_password/$', views.change_password, name='change_password'),
 
     url(r'dashboard', views.dashboard, name='dashboard'),
-    url(r'services', views.services, name='services'),
+    url(r'^services/$', views.service, name='service'),
+    url(r'^services/airtime/$', views.airtime_service, name='airtimes'),
+    url(r'^services/airtime/purchase/$', views.airtime_purchase, name='airtime_purchase'),
+    url(r'^services/data/$', views.data_service, name='datas'),
+    url(r'^services/data/purchase/$', views.data_purchase, name='data_purchase'),
+    url(r'service', views.services, name='services'),
     url(r'contact', views.contact, name='contact'),
-    url(r'wallet', views.wallet, name='wallet'),
+    url(r'^reach_us/$', views.contactus, name='reach'),
+    # url(r'wallet', views.wallet, name='wallet'),
     url(r'funding', views.funding, name='funding'),
     url(r'^verify_transaction', Verify_Payment.as_view(), name='verify_transaction'),
     url(r'profile', views.profile, name='profile'),
@@ -57,7 +64,7 @@ urlpatterns = [
     url(r'cable', views.cable, name='cable'),
     url(r'airtime', views.airtime, name='airtime'),
     url(r'electricity', views.electricity, name='electricity'),
-    url(r'services', views.services, name='services'),
+    # url(r'services', views.services, name='services'),
     url(r'webhook', views.webhook, name='webhook'),
     # url(r'dashboard', views.dashboard, name='dashboard'),
 ]

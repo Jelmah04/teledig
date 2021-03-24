@@ -2,6 +2,8 @@
 import datetime
 from django.conf import settings
 import math, random
+import requests
+
 
 def generateOTP() : 
   
@@ -16,3 +18,13 @@ def generateOTP() :
         OTP += digits[math.floor(random.random() * 10)] 
   
     return OTP
+
+
+def fetch_data_plan(di):
+    url = 'https://www.alexdata.com.ng/api/data/'
+    headers = {
+        "Authorization": "Token " +settings.ALEX_DATA_KEY,
+        'Content-Type': 'application/json'
+    }
+    x = requests.get(url, headers=headers)
+    return x

@@ -1,0 +1,84 @@
+{% extends 'app.html' %}
+
+{% block body %}
+{% load humanize %}
+ <!-- ============================================================== -->
+            <!-- Start right Content here -->
+            <!-- ============================================================== -->
+            <div class="main-content">
+
+                <div class="page-content">
+                    <div class="container-fluid">
+
+                        <!-- start page title -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="page-title-box d-flex align-items-center justify-content-between">
+                                    <h4 class="mb-0 font-size-18">Services</h4>
+
+                                    <div class="page-title-right">
+                                        <ol class="breadcrumb m-0">
+                                            <li class="breadcrumb-item active"><a href="{% url 'index' %}">Home</a></li>
+                                            <li class="breadcrumb-item active">Services</li>
+                                        </ol>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end page title -->
+
+                        <div class="row">
+                            <div class="col-lg-4 ">
+                                <div class="card card-body text-center">
+                                    <h4 class="card-title mt-0">Airtime</h4>
+                                    <p class="card-text">With supporting text below as a natural lead-in to additional
+                                        content.</p>
+                                    <a href="{% url 'airtimes' %}" class="btn btn-primary waves-effect waves-light">Buy Now</a>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4 ">
+                                <div class="card card-body text-center">
+                                    <h4 class="card-title mt-0">Data Subscription</h4>
+                                    <p class="card-text">With supporting text below as a natural lead-in to additional
+                                        content.</p>
+                                    <a href="{% url 'datas' %}" class="btn btn-primary waves-effect waves-light">Buy Now</a>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4 ">
+                                <div class="card card-body text-center">
+                                    <h4 class="card-title mt-0">Cable Subscription</h4>
+                                    <p class="card-text">With supporting text below as a natural lead-in to additional
+                                        content.</p>
+                                    <a href="#" class="btn btn-primary waves-effect waves-light">Buy Now</a>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4 ">
+                                <div class="card card-body text-center">
+                                    <h4 class="card-title mt-0">Electric Bills</h4>
+                                    <p class="card-text">With supporting text below as a natural lead-in to additional
+                                        content.</p>
+                                    <a href="#" class="btn btn-primary waves-effect waves-light">Buy Now</a>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4 ">
+                                <div class="card card-body text-center">
+                                    <h4 class="card-title mt-0">Buy/Sell Bitcoin</h4>
+                                    <p class="card-text">With supporting text below as a natural lead-in to additional
+                                        content.</p>
+                                    <a href="#" class="btn btn-primary waves-effect waves-light">Enter Here</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- container-fluid -->
+                </div>
+                <!-- End Page-content -->
+	{% include 'footer.html' %}
+</div>
+
+{% endblock %}
