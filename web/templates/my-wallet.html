@@ -1,0 +1,48 @@
+{% extends 'app.html' %}
+
+{% block body %}
+{% load humanize %}
+ <!-- ============================================================== -->
+            <!-- Start right Content here -->
+            <!-- ============================================================== -->
+            <div class="main-content">
+
+                <div class="page-content">
+                    <div class="container-fluid">
+
+                        <!-- start page title -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="page-title-box d-flex align-items-center justify-content-between">
+                                    <h4 class="mb-0 font-size-18">My Wallet</h4>
+
+                                    <div class="page-title-right">
+                                        <ol class="breadcrumb m-0">
+                                            <li class="breadcrumb-item"><a href="{% url 'index' %}">Home</a></li>
+                                            <li class="breadcrumb-item active">Wallet</li>
+                                        </ol>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end page title -->
+
+                        <div class="row">
+                            <div class="col-xl-12 col-md-12">
+                                <h2 class="text-muted text-center">Fund Your Wallet</h2>
+
+                                <p class="text-center d-flex justify-content-between align-items-center">
+                                    By funding your wallet, you are legible to get the best of our services at TELEPALACE. Kindly use our online payment method for payments between N100 and N2450 and get your wallet funded automatically as soon as payment is successful. 
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- container-fluid -->
+                </div>
+                <!-- End Page-content -->
+    {% include 'footer.html' %}
+</div>
+
+{% endblock %}

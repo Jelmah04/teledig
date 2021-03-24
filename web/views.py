@@ -52,7 +52,16 @@ def home(request):
 	return render(request, 'index.html')
 
 def index(request):
-	return render(request, 'dashboard.html')
+	user_wallet = UserWallet.objects.get(user=request.user)
+	pay_history = PayHistory.objects.filter(user=request.user)
+	context = {
+		'user_wallet': user_wallet.amount,
+		'pay_history': pay_history
+	}
+	return render(request, 'home.html', context)
+
+def my_wallet(request):
+	return render(request, 'my-wallet.html')
 
 def signin(request):
 	if request.user.is_authenticated:
@@ -129,8 +138,6 @@ def register(request):
 def register_ajax(request):
 	if request.is_ajax():
 		form = SignUpForm(request.POST)
-		print(form)
-		print(request.POST)
 		if form.is_valid():
 			form.save()
 			obj = form.save()
@@ -304,6 +311,47 @@ def dashboard (request):
 	}
 	return render (request, 'dashboard.html', context)
 
+
+def service(request):
+	return render(request, 'service.html')
+
+def data_service(request):
+	return render (request, 'datas.html')
+
+def airtime_service(request):
+	return render(request, 'airtimes.html')
+
+def airtime_purchase(request):
+	if request.is_ajax():
+		network = request.POST.get("network", None)
+		mobile = request.POST.get("mobile", None)
+		amount = request.POST.get("amount", None)
+		wallet = UserWallet.objects.get(user=request.user)
+		if Decimal(amount) > wallet.amount:
+			response = {'error': 'You do not have have sufficient fund in your wallet.'}
+			return JsonResponse(response)
+		url = 'https://www.alexdata.com.ng/api/topup/'
+		headers = {
+			"Authorization": "Token " +settings.ALEX_DATA_KEY,
+			'Content-Type': 'application/json'
+		}
+		datum = {
+			"network": network,
+			"mobile_number": mobile,
+			"amount": amount
+		}
+		x = requests.post(url, headers=headers, data=json.dumps(datum))
+		
+		# results = x.json()['success']
+		if x.json()['error']:
+			response = {'error': x.json()['error']}
+		else:
+			response = {'success': x.json()['success']}
+			user_wallet = UserWallet.objects.get(user=request.user)
+			user_wallet.amount -= Decimal(amount)
+			user_wallet.save()
+		return JsonResponse(response)
+
 def services (request):
 	return render (request, 'services.html')
 
@@ -343,7 +391,7 @@ class Verify_Payment(APIView):
 		if x.json()['status'] == False:
 			return False
 		results = x.json()
-		PayHistory.objects.create(user=user, paystack_charge_id=results["data"]["reference"], amount=results["data"]["amount"], paid=True)
+		PayHistory.objects.create(user=user, purpose="data", paystack_charge_id=results["data"]["reference"], amount=results["data"]["amount"], paid=True)
 		current_wallet = UserWallet.objects.get(user=user)
 		current_wallet.amount += (results["data"]["amount"] /Decimal(100))
 		current_wallet.save()
