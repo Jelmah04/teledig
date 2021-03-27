@@ -35,7 +35,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 
 
-# client = Client(settings.TWILIO_SID, settings.TWILIO_AUTH_TOKEN)
+client = Client(settings.TWILIO_SID, settings.TWILIO_AUTH_TOKEN)
 
 def gen_token(length=64, charset="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@$%-_"):
 	return "".join([secrets.choice(charset) for _ in range(0, length)])
@@ -50,6 +50,8 @@ today = datetime.date.today()
 
 
 def home(request):
+	if request.user.is_authenticated:
+		return redirect('index')
 	return render(request, 'index.html')
 
 def index(request):
@@ -139,35 +141,45 @@ def register(request):
 def register_ajax(request):
 	if request.is_ajax():
 		form = SignUpForm(request.POST)
+		print('form submitted')
 		if form.is_valid():
+			print('this form is valid')
 			form.save()
 			obj = form.save()
 			otp_code = generateOTP()
+			mobile = obj.mobile
 			site_name = settings.SITE_NAME
 			full_name = obj.first_name + ' ' + obj.last_name
 
-			subject_file = os.path.join(settings.BASE_DIR, "mail/register/subject.txt")
-			subject = render_to_string(subject_file, {'name': obj.first_name, 'site_name': site_name})
-			from_email = settings.DEFAULT_EMAIL_SENDER
-			to_email = [obj.email]
+			print('about to send otp')
+			sms_number = mobile[1:]
+			send_sms = client.messages.create(body='Hi' + 'Thanks for joining Telepalace. \n your OTP is:' + otp_code + '.',
+			from_ = '+13603299156',
+			to = '+234'+ sms_number)
+			print ('otp sent'+ otp_code)
 
-			register_message_file = os.path.join(settings.BASE_DIR, "mail/register/body.txt")
-			register_message = render_to_string(register_message_file, {
-														'first_name': obj.first_name, 'last_name': obj.last_name,
-														'otp_code': otp_code, 'site_name': site_name,
-													})
-
-			message = EmailMultiAlternatives(subject=subject, body=register_message, from_email=from_email, to=to_email)
-
-			html_template = os.path.join(settings.BASE_DIR, "mail/register/body.html")
-			template = render_to_string(html_template, {
-														'first_name': obj.first_name, 'last_name': obj.last_name,
-														'otp_code': otp_code, 'site_name': site_name,
-														})
-
-			message.attach_alternative(template, "text/html")
-
-			message.send()
+			# subject_file = os.path.join(settings.BASE_DIR, "mail/register/subject.txt")
+			# subject = render_to_string(subject_file, {'name': obj.first_name, 'site_name': site_name})
+			# from_email = settings.DEFAULT_EMAIL_SENDER
+			# to_email = [obj.email]
+# 
+			# register_message_file = os.path.join(settings.BASE_DIR, "mail/register/body.txt")
+			# register_message = render_to_string(register_message_file, {
+														# 'first_name': obj.first_name, 'last_name': obj.last_name,
+														# 'otp_code': otp_code, 'site_name': site_name,
+													# })
+# 
+			# message = EmailMultiAlternatives(subject=subject, body=register_message, from_email=from_email, to=to_email)
+# 
+			# html_template = os.path.join(settings.BASE_DIR, "mail/register/body.html")
+			# template = render_to_string(html_template, {
+														# 'first_name': obj.first_name, 'last_name': obj.last_name,
+														# 'otp_code': otp_code, 'site_name': site_name,
+														# })
+# 
+			# message.attach_alternative(template, "text/html")
+# 
+			# message.send()
 			UserSettings.objects.create(
 				user=obj,
 				verified_code=otp_code
@@ -175,6 +187,7 @@ def register_ajax(request):
 			response = {'success': 'Registration successful. Kindly enter the OTP sent to your email address. ['+obj.email+']'}
 			return JsonResponse(response)
 		else:
+			print('this form is not a valid one')
 			response = {'error': 'We could not process your request. Try again.'}
 			return JsonResponse(response)
 	else:
@@ -280,7 +293,7 @@ def reset_pass(request):
 
 		if password2 != password1:
 			return JsonResponse({'error': 'Password mismatch. Try again.'})
-		elif length < 6:
+		elif length < 4:
 			return JsonResponse({'error': 'Password is too short. Try another'})
 		elif not upper_case:
 			return JsonResponse({'error': 'Password must contain at least one Uppercase.'})
@@ -516,3 +529,69 @@ def webhook (request):
 		return HttpResponseRedirect(link)
 	return render (request, 'webhook.html')
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def get_cable_plan(request):
+	if request.is_ajax():
+		result = fetch_cable_plan()
+		print(result)
+		response = {"success": "yeah"}
+		return JsonResponse(response)
+
+def cable_service(request):
+	return render (request, 'cables.html')
+
+def cable_purchase(request):
+	if request.is_ajax():
+		network = request.POST.get("network", None)
+		mobile = request.POST.get("mobile", None)
+		amount = request.POST.get("amount", None)
+		cable_plan = request.POST.get("cable_plan", None)
+		wallet = UserWallet.objects.get(user=request.user)
+		if Decimal(amount) > wallet.amount:
+			response = {'error': 'You do not have have sufficient fund in your wallet.'}
+			return JsonResponse(response)
+		url = 'https://www.alexdata.com.ng/api/topup/'
+		headers = {
+			"Authorization": "Token " +settings.ALEX_DATA_KEY,
+			'Content-Type': 'application/json'
+		}
+		datum = {
+			"network": network,
+			"mobile_number": mobile,
+			"plan": cable_plan
+		}
+		x = requests.post(url, headers=headers, data=json.dumps(datum))
+		# print(x.json())
+		
+		# results = x.json()['success']
+		if x.status_code == 500:
+			response = {'error': "Error500: Internal Server Error"}
+		elif x.json()['detail']:
+			response = {'error': x.json()['detail']}
+		elif x.json()['error']:
+			response = {'error': x.json()['error']}
+		else:
+			response = {'success': x.json()['success']}
+			user_wallet = UserWallet.objects.get(user=request.user)
+			user_wallet.amount -= Decimal(amount)
+			user_wallet.save()
+		return JsonResponse(response)

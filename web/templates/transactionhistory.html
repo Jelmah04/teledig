@@ -14,11 +14,11 @@
                         <div class="row">
                             <div class="col-12">
                                 <div class="page-title-box d-flex align-items-center justify-content-between">
-                                    <h4 class="mb-0 font-size-18">Dashboard</h4>
+                                    <h4 class="mb-0 font-size-18">Transaction</h4>
 
                                     <div class="page-title-right">
                                         <ol class="breadcrumb m-0">
-                                            <li class="breadcrumb-item active">Welcome to Dashboard</li>
+                                            <li class="breadcrumb-item active">Welcome to your transaction page</li>
                                         </ol>
                                     </div>
 
@@ -26,160 +26,6 @@
                             </div>
                         </div>
                         <!-- end page title -->
-
-                        <div class="row">
-                            <div class="col-xl-4">
-                                <div class="card overflow-hidden">
-                                    <div class="bg-soft-primary">
-                                        <div class="row">
-                                            <div class="col-7">
-                                                <div class="text-primary p-3">
-                                                    <h5 class="text-primary">Welcome Back!</h5>
-                                                    <p>Agentshub Dashboard</p>
-                                                </div>
-                                            </div>
-                                            <div class="col-5 align-self-end">
-                                                <img src="/static/images/profile-img.png" alt="" class="img-fluid">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="card-body pt-0">
-                                        <div class="row">
-                                            <div class="col-sm-4">
-                                                <div class="avatar-md profile-user-wid mb-4">
-                                                    <img src="/static/images/users/avatar-1.jpg" alt="" class="img-thumbnail rounded-circle">
-                                                </div>
-                                                <h5 class="font-size-15 text-truncate">{{ user.first_name }} {{ user.last_name }}</h5>
-                                                <p class="text-muted mb-0 text-truncate">{{ user.username }}</p>
-                                            </div>
-
-                                            <div class="col-sm-8">
-                                                <div class="pt-4">
-
-                                                    <div class="row">
-                                                        <div class="col-6">
-                                                            <h5 class="font-size-15">125</h5>
-                                                            <p class="text-muted mb-0">Projects</p>
-                                                        </div>
-                                                        <div class="col-6">
-                                                            <h5 class="font-size-15">₦1245</h5>
-                                                            <p class="text-muted mb-0">Revenue</p>
-                                                        </div>
-                                                    </div>
-                                                    <div class="mt-4">
-                                                        <a href="#" class="btn btn-primary waves-effect waves-light btn-sm">View Profile <i class="mdi mdi-arrow-right ml-1"></i></a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h4 class="card-title mb-4">Monthly Transactions</h4>
-                                        <div class="row">
-                                            <div class="col-sm-6">
-                                                <p class="text-muted">This month</p>
-                                                <h3>₦34,252</h3>
-                                                <p class="text-muted"><span class="text-success mr-2"> 12% <i class="mdi mdi-arrow-up"></i> </span> From previous period</p>
-
-                                                <div class="mt-4">
-                                                    <a href="#" class="btn btn-primary waves-effect waves-light btn-sm">View More <i class="mdi mdi-arrow-right ml-1"></i></a>
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-6">
-                                                <div class="mt-4 mt-sm-0">
-                                                    <div id="radialBar-chart" class="apex-charts"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <p class="text-muted mb-0">We sell airtime and data for all networks in Nigeria. Bill payment and cable subscriptions is also available. </p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xl-8">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="card mini-stats-wid">
-                                            <div class="card-body">
-                                                <div class="media">
-                                                    <div class="media-body">
-                                                        <p class="text-muted font-weight-medium">Wallet</p>
-                                                        <h4 class="mb-0">₦{{ user_wallet|intcomma }}</h4>
-                                                    </div>
-
-                                                    <div class="mini-stat-icon avatar-sm rounded-circle bg-primary align-self-center">
-                                                        <span class="avatar-title">
-                                                            <i class="bx bx-copy-alt font-size-24"></i>
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="card mini-stats-wid">
-                                            <div class="card-body">
-                                                <div class="media">
-                                                    <div class="media-body">
-                                                        <p class="text-muted font-weight-medium">Today Transactions</p>
-                                                        <h4 class="mb-0">₦35,723</h4>
-                                                    </div>
-
-                                                    <div class="avatar-sm rounded-circle bg-primary align-self-center mini-stat-icon">
-                                                        <span class="avatar-title rounded-circle bg-primary">
-                                                            <i class="bx bx-archive-in font-size-24"></i>
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="card mini-stats-wid">
-                                            <div class="card-body">
-                                                <div class="media">
-                                                    <div class="media-body">
-                                                        <p class="text-muted font-weight-medium">Total Purchased</p>
-                                                        <h4 class="mb-0">$16.2</h4>
-                                                    </div>
-
-                                                    <div class="avatar-sm rounded-circle bg-primary align-self-center mini-stat-icon">
-                                                        <span class="avatar-title rounded-circle bg-primary">
-                                                            <i class="bx bx-purchase-tag-alt font-size-24"></i>
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- end row -->
-
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h4 class="card-title mb-4 float-sm-left">Email Sent</h4>
-                                        <div class="float-sm-right">
-                                            <ul class="nav nav-pills">
-                                                <li class="nav-item">
-                                                    <a class="nav-link" href="#">Week</a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a class="nav-link" href="#">Month</a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a class="nav-link active" href="#">Year</a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div class="clearfix"></div>
-
-                                        <div id="stacked-column-chart" class="apex-charts" dir="ltr"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- end row -->
 
                         <div class="row">
                             <div class="col-lg-12">
@@ -393,3 +239,94 @@
 </div>
 
 {% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% comment %}  {% endcomment %}
+{% comment %} {% extends "shared/base.html" %} {% endcomment %}
+{% comment %} {% load static %} {% endcomment %}
+{% comment %}  {% endcomment %}
+{% comment %} {% block title %} {% endcomment %}
+  {% comment %} Transaction Records {% endcomment %}
+{% comment %} {% endblock title %} {% endcomment %}
+{% comment %}  {% endcomment %}
+{% comment %}  {% endcomment %}
+{% comment %} {% block maintwo %} {% endcomment %}
+{% comment %}  {% endcomment %}
+{% comment %} <section class="seesales"> {% endcomment %}
+  {% comment %} <div class="container"> {% endcomment %}
+    {% comment %} <h3 class="text-center mt-5">Transactions History</h3> {% endcomment %}
+    {% comment %} <div class="row"> {% endcomment %}
+      {% comment %} <div class="col-sm-12"> {% endcomment %}
+       {% comment %} {% if allhistory %} {% endcomment %}
+       {% comment %} <table class="table table-hover"> {% endcomment %}
+        {% comment %} <thead class="thead-dark"> {% endcomment %}
+          {% comment %} <tr class=""> {% endcomment %}
+            {% comment %} <!-- <th scope="col">Customer</th> --> {% endcomment %}
+            {% comment %} <th scope="col">Reference Code</th> {% endcomment %}
+            {% comment %} <th scope="col">Card Number</th> {% endcomment %}
+            {% comment %} <th scope="col">Volume</th> {% endcomment %}
+            {% comment %} <th scope="col">Amount</th> {% endcomment %}
+            {% comment %} <th scope="col">Status</th> {% endcomment %}
+            {% comment %} <th scope="col">Pre_bal</th> {% endcomment %}
+            {% comment %} <th scope="col">Post_bal</th> {% endcomment %}
+            {% comment %} <th scope="col">Date</th> {% endcomment %}
+          {% comment %} </tr> {% endcomment %}
+        {% comment %} </thead> {% endcomment %}
+        {% comment %} <tbody> {% endcomment %}
+{% comment %}  {% endcomment %}
+          {% comment %} {% for item in allhistory %} {% endcomment %}
+          {% comment %} <tr class=""> {% endcomment %}
+            {% comment %} <!-- <td class="intra">{{item.user.username}}</td> --> {% endcomment %}
+            {% comment %} <td>{{item.reference_id }}</td> {% endcomment %}
+            {% comment %} <td>{{item.volume}}</td> {% endcomment %}
+            {% comment %} <td>{{item.card_number}}</td> {% endcomment %}
+            {% comment %} <td>{{item.amount}}</td> {% endcomment %}
+            {% comment %} <td>{{item.status}}</td> {% endcomment %}
+            {% comment %} <td>{{item.prebal}}</td> {% endcomment %}
+            {% comment %} <td>{{item.postbal}}</td> {% endcomment %}
+            {% comment %} <td>{{item.date}}</td> {% endcomment %}
+          {% comment %} </tr> {% endcomment %}
+          {% comment %} {% endfor %} {% endcomment %}
+        {% comment %} </tbody> {% endcomment %}
+      {% comment %} </table> {% endcomment %}
+       {% comment %} {% else %} {% endcomment %}
+         {% comment %} <p> {% endcomment %}
+           {% comment %} <h4 class="bg-danger text-white p-4 ">No Record as at now</h4> {% endcomment %}
+         {% comment %} </p> {% endcomment %}
+       {% comment %} {% endif %} {% endcomment %}
+       {% comment %}  {% endcomment %}
+      {% comment %} </div> {% endcomment %}
+    {% comment %} </div> {% endcomment %}
+  {% comment %} </div> {% endcomment %}
+{% comment %}  {% endcomment %}
+{% comment %} </section> {% endcomment %}
+{% comment %}  {% endcomment %}
+{% comment %} {% endblock maintwo %} {% endcomment %}
+
+

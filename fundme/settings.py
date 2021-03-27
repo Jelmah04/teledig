@@ -139,11 +139,15 @@ EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
 
 
-# TWILIO_SID = config('AC4947d9b81b370deb9024940b70b2c8a1')
-# TWILIO_AUTH_TOKEN = config('c1cd35b50fe321c47e691f4b62a2c9bc')
-# cac884b94b321cb76263ebb973fdc20c test mode
-
 PAYSTACK_SECRET_KEY = 'sk_test_9559c105ee1b3354c2cd157b8140ea5d231ed77b'
 PAYSTACK_PUBLIC_KEY = 'pk_test_f9d521d0cf9be5abb26d59e9d6340b759183a40e'
 
 ALEX_DATA_KEY = 'd79f5efe4e91921649c9e21a8957cc5d61d4be6e'
+
+
+# TWILIO_SID = config('TWILIO_SID')
+# TWILIO_AUTH_TOKEN = config('TWILIO_AUTH_TOKEN')
+## cac884b94b321cb76263ebb973fdc20c test mode
+ 
+TWILIO_SID = 'AC4947d9b81b370deb9024940b70b2c8a1'
+TWILIO_AUTH_TOKEN = 'fd68b1d10da2eb3853938015794026a1'

@@ -52,6 +52,10 @@ urlpatterns = [
     url(r'^services/airtime/purchase/$', views.airtime_purchase, name='airtime_purchase'),
     url(r'^services/data/$', views.data_service, name='datas'),
     url(r'^services/data/purchase/$', views.data_purchase, name='data_purchase'),
+
+    url(r'^services/cable/$', views.cable_service, name='cables'),
+    url(r'^services/cable/purchase/$', views.cable_purchase, name='cable_purchase'),
+
     url(r'service', views.services, name='services'),
     url(r'contact', views.contact, name='contact'),
     url(r'^reach_us/$', views.contactus, name='reach'),

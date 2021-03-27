@@ -1,30 +1,38 @@
+{% extends 'app.html' %}
 
-{% extends "shared/base.html" %}
-{% load static %}
+{% block body %}
+{% load humanize %}
+ <!-- ============================================================== -->
+            <!-- Start right Content here -->
+            <!-- ============================================================== -->
+<div class="main-content">
 
-{% block title %}
-  Fund my wallet
-{% endblock title %}
+                <div class="page-content">
+                    <div class="container-fluid">
+
+                        <!-- start page title -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="page-title-box d-flex align-items-center justify-content-between">
+                                    <h4 class="mb-0 font-size-18">Add to wallet</h4>
+
+                                    <div class="page-title-right">
+                                        <ol class="breadcrumb m-0">
+                                            <li class="breadcrumb-item active">Dear User, Thank you for transacting with us</li>
+                                        </ol>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end page title -->
+                    </div>
+                    <!-- container-fluid -->
+                </div>
+                <!-- End Page-content -->
 
 
-
-{% block maintwo %}
-
-    <div class="mainbarr">
-      <div class="top" style="display:grid; grid-template-columns:1fr 1fr 3fr 6fr">
-        <h5><a href="">Card</a></h5>
-        <h5><a href="">Bank</a></h5>
-        <h5><a href="">Pay with Airtime</a></h5>
-        <h5 id="greetings">
-          {% if request.user.is_authenticated %}
-            <p style="color: greenyellow;">God Bless {{request.user.username}} for us</p>
-          {% endif %}
-        </h5>
-      </div>
-
-      <div class="bigfund">
-          <center><h3 style="color: rgb(36, 160, 160);">Fund Your Wallet</h3></center>
-      </div>
+<!-- other parts for funding  -->
 <style>
     .fundsec{
         width: 80%;
@@ -107,7 +115,7 @@
             callback: function(response){
               console.log(response);
                 $.ajax({
-                    url: 'http://localhost:90/verify_transaction?reference='+ response.reference,
+                    url: 'http://localhost/verify_transaction?reference='+ response.reference,
                     method: 'get',
                     success: function (res) {
                       console.log(res);
@@ -129,6 +137,65 @@
         handler.openIframe();
     }
 </script>
+<!--Ending of other parts for funding  -->
+
+	{% include 'footer.html' %}
+</div>
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% comment %} {% extends "shared/base.html" %} {% endcomment %}
+{% comment %} {% load static %} {% endcomment %}
+
+{% block title %}
+  Fund my wallet
+{% endblock title %}
+
+
+
+{% block maintwo %}
+
+    <div class="mainbarr">
+      <div class="top" style="display:grid; grid-template-columns:1fr 1fr 3fr 6fr">
+        <h5><a href="">Card</a></h5>
+        <h5><a href="">Bank</a></h5>
+        <h5><a href="">Pay with Airtime</a></h5>
+        <h5 id="greetings">
+          {% if request.user.is_authenticated %}
+            <p style="color: greenyellow;">God Bless {{request.user.username}} for us</p>
+          {% endif %}
+        </h5>
+      </div>
+
+      <div class="bigfund">
+          <center><h3 style="color: rgb(36, 160, 160);">Fund Your Wallet</h3></center>
+      </div>
 
 {% endblock maintwo %}
 
