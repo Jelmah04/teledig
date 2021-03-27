@@ -293,7 +293,7 @@ def reset_pass(request):
 
 		if password2 != password1:
 			return JsonResponse({'error': 'Password mismatch. Try again.'})
-		elif length < 6:
+		elif length < 4:
 			return JsonResponse({'error': 'Password is too short. Try another'})
 		elif not upper_case:
 			return JsonResponse({'error': 'Password must contain at least one Uppercase.'})
@@ -529,3 +529,69 @@ def webhook (request):
 		return HttpResponseRedirect(link)
 	return render (request, 'webhook.html')
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def get_cable_plan(request):
+	if request.is_ajax():
+		result = fetch_cable_plan()
+		print(result)
+		response = {"success": "yeah"}
+		return JsonResponse(response)
+
+def cable_service(request):
+	return render (request, 'cables.html')
+
+def cable_purchase(request):
+	if request.is_ajax():
+		network = request.POST.get("network", None)
+		mobile = request.POST.get("mobile", None)
+		amount = request.POST.get("amount", None)
+		cable_plan = request.POST.get("cable_plan", None)
+		wallet = UserWallet.objects.get(user=request.user)
+		if Decimal(amount) > wallet.amount:
+			response = {'error': 'You do not have have sufficient fund in your wallet.'}
+			return JsonResponse(response)
+		url = 'https://www.alexdata.com.ng/api/topup/'
+		headers = {
+			"Authorization": "Token " +settings.ALEX_DATA_KEY,
+			'Content-Type': 'application/json'
+		}
+		datum = {
+			"network": network,
+			"mobile_number": mobile,
+			"plan": cable_plan
+		}
+		x = requests.post(url, headers=headers, data=json.dumps(datum))
+		# print(x.json())
+		
+		# results = x.json()['success']
+		if x.status_code == 500:
+			response = {'error': "Error500: Internal Server Error"}
+		elif x.json()['detail']:
+			response = {'error': x.json()['detail']}
+		elif x.json()['error']:
+			response = {'error': x.json()['error']}
+		else:
+			response = {'success': x.json()['success']}
+			user_wallet = UserWallet.objects.get(user=request.user)
+			user_wallet.amount -= Decimal(amount)
+			user_wallet.save()
+		return JsonResponse(response)
