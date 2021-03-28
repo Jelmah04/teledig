@@ -1,3 +1,4 @@
+from django.http.response import HttpResponse
 from django.shortcuts import render, redirect
 from rest_framework import response
 from rest_framework.views import APIView
@@ -329,18 +330,12 @@ def dashboard (request):
 def service(request):
 	return render(request, 'service.html')
 
-def get_data_plan(request):
-	if request.is_ajax():
-		result = fetch_data_plan()
-		print(result)
-		response = {"success": "yeah"}
-		return JsonResponse(response)
-
 def data_service(request):
 	return render (request, 'datas.html')
 
 def data_purchase(request):
 	if request.is_ajax():
+		user = request.user
 		network = request.POST.get("network", None)
 		mobile = request.POST.get("mobile", None)
 		amount = request.POST.get("amount", None)
@@ -360,15 +355,28 @@ def data_purchase(request):
 			"plan": data_plan
 		}
 		x = requests.post(url, headers=headers, data=json.dumps(datum))
+		ref_code = 'REFNO'+secrets.token_hex(7)
 		
 		# results = x.json()['success']
 		if x.status_code == 500:
+			PayHistory.objects.create(
+				user=user, purpose="airtime", paystack_charge_id=ref_code, amount=amount, paid=False, status=False
+			)
 			response = {'error': "Error500: Internal Server Error"}
 		elif x.json()['detail']:
+			PayHistory.objects.create(
+				user=user, purpose="airtime", paystack_charge_id=ref_code, amount=amount, paid=False, status=False
+			)
 			response = {'error': x.json()['detail']}
 		elif x.json()['error']:
+			PayHistory.objects.create(
+				user=user, purpose="airtime", paystack_charge_id=ref_code, amount=amount, paid=False, status=False
+			)
 			response = {'error': x.json()['error']}
 		else:
+			PayHistory.objects.create(
+				user=user, purpose="airtime", paystack_charge_id=ref_code, amount=amount, paid=True, status=True
+			)
 			response = {'success': x.json()['success']}
 			user_wallet = UserWallet.objects.get(user=request.user)
 			user_wallet.amount -= Decimal(amount)
@@ -380,6 +388,7 @@ def airtime_service(request):
 
 def airtime_purchase(request):
 	if request.is_ajax():
+		user = request.user
 		network = request.POST.get("network", None)
 		mobile = request.POST.get("mobile", None)
 		amount = request.POST.get("amount", None)
@@ -398,11 +407,18 @@ def airtime_purchase(request):
 			"amount": amount
 		}
 		x = requests.post(url, headers=headers, data=json.dumps(datum))
+		ref_code = 'REFNO'+secrets.token_hex(7)
 		
 		# results = x.json()['success']
 		if x.json()['error']:
+			PayHistory.objects.create(
+				user=user, purpose="airtime", paystack_charge_id=ref_code, amount=amount, paid=False, status=False
+			)
 			response = {'error': x.json()['error']}
 		else:
+			PayHistory.objects.create(
+				user=user, purpose="airtime", paystack_charge_id=ref_code, amount=amount, paid=True, status=True
+			)
 			response = {'success': x.json()['success']}
 			user_wallet = UserWallet.objects.get(user=request.user)
 			user_wallet.amount -= Decimal(amount)
@@ -436,6 +452,14 @@ def funding (request):
 	}
 	return render (request, 'funding.html', context)
 
+
+def create_wallet_history(request):
+	if request.is_ajax():
+		user = request.user
+		PayHistory.objects.create(user=user, purpose="wallet", paystack_charge_id=request.POST["reference"], amount=request.POST['amount'], paid=False, status=False)
+		return JsonResponse("success")
+
+
 class Verify_Payment(APIView):
 	def get(self, request):
 		user = request.user
@@ -448,7 +472,18 @@ class Verify_Payment(APIView):
 		if x.json()['status'] == False:
 			return False
 		results = x.json()
-		PayHistory.objects.create(user=user, purpose="data", paystack_charge_id=results["data"]["reference"], amount=results["data"]["amount"], paid=True)
+		if results['data']['status'] == 'success':
+			PayHistory.objects.create(
+				user=user, purpose="wallet",
+				paystack_charge_id=results["data"]["reference"],
+				amount=results["data"]["amount"], paid=True, status=True
+			)
+		else:
+			PayHistory.objects.create(
+				user=user, purpose="wallet",
+				paystack_charge_id=results["data"]["reference"],
+				amount=results["data"]["amount"], paid=True, status=False
+			)
 		current_wallet = UserWallet.objects.get(user=user)
 		current_wallet.amount += (results["data"]["amount"] /Decimal(100))
 		current_wallet.save()
@@ -528,25 +563,6 @@ def webhook (request):
 		link = initialized['data']['authorization_url']
 		return HttpResponseRedirect(link)
 	return render (request, 'webhook.html')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 def get_cable_plan(request):
