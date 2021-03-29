@@ -319,7 +319,7 @@ def change_password (request):
 
 def dashboard (request):
 	user_wallet = UserWallet.objects.get(user=request.user)
-	pay_history = PayHistory.objects.filter(user=request.user)
+	pay_history = PayHistory.objects.filter(user=request.user).order_by('id').reverse()[:4]
 	context = {
 		'user_wallet': user_wallet.amount,
 		'pay_history': pay_history
@@ -540,7 +540,11 @@ def webhook (request):
 	return render (request, 'webhook.html')
 
 def transactionhistory (request):
-	return render (request, 'transactionhistory.html')
+	pay_history = PayHistory.objects.filter(user=request.user).order_by('id').reverse()
+	context = {
+		'pay_history': pay_history
+	}
+	return render (request, 'transactionhistory.html', context)
 
 def webhook (request):
 	if request.method == 'POST':

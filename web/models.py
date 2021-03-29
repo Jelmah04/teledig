@@ -109,7 +109,7 @@ class UserSettings(models.Model):
 #### User Payment History
 class PayHistory(models.Model):
 	pur = (
-		("data", "Data"),
+		("datas", "Data"),
 		("airtime", "Airtime"),
 		("wallet", "Wallet"),
 		("bill", "Bill"),
