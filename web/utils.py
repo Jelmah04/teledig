@@ -29,3 +29,9 @@ def fetch_data_plan(di):
     x = requests.get(url, headers=headers)
     return x
 
+
+
+# TWILIO_AUTH_TOKEN = config('fd68b1d10da2eb3853938015794026a1')
+# AC4947d9b81b370deb9024940b70b2c8a1
+# 19d346e5f21547ca93bed98f32cb1e38
+# 
