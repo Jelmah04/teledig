@@ -1,0 +1,232 @@
+{% extends 'app.html' %}
+
+{% block body %}
+{% load humanize %}
+ <!-- ============================================================== -->
+            <!-- Start right Content here -->
+            <!-- ============================================================== -->
+            <div class="main-content">
+
+                <div class="page-content">
+                    <div class="container-fluid">
+
+                        <!-- start page title -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="page-title-box d-flex align-items-center justify-content-between">
+                                    <h4 class="mb-0 font-size-18">Purchase Electricity Subscription</h4>
+
+                                    <div class="page-title-right">
+                                        <ol class="breadcrumb m-0">
+                                            <li class="breadcrumb-item active"><a href="{% url 'index' %}">Home</a></li>
+                                            <li class="breadcrumb-item active"><a href="{% url 'service' %}">Services</a></li>
+                                            <li class="breadcrumb-item active">Electricity Subscription</li>
+                                        </ol>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end page title -->
+
+                        <div class="row">
+                            <div class="container w-50 h-100">
+                                <div class="row h-100 justify-content-center align-items-center">
+                                  <form class="col-12" id="data">
+                                    <div id="output" class="text-center font-weight-600 uppercase hide alert"></div>
+                                    <div class="form-group">
+                                        <label for="network">Select Disco </label>
+                                        <select id="network" onchange="getDataPlan()" class="form-control">
+                                            <option selected>Choose Disco</option>
+                                            <option value="1">IKEJA</option>
+                                            <option value="2">IBEDC</option>
+                                            <option value="4">KANO</option>
+                                            <option value="3">P.HARCOURT</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="network">Select Tariff </label>
+                                        <select id="network" onchange="getDatPlan()" class="form-control">
+                                            <option selected>Choose Tariff</option>
+                                            <option value="1">POSTPAID</option>
+                                            <option value="2">PREPAID</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="mobile">Smart Card Number </label>
+                                        <input type="text" pattern = "^[0]\d{11}$" maxlength="12" class="form-control" id="mobile" placeholder="090xxxxxxxx" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="mobile">Amount </label>
+                                        <input type="number" class="form-control" id="amount" placeholder="5000" required>
+                                    </div>
+
+                                    <!-- <div class="form-group"> -->
+                                        <!-- <label for="dataPlan">Select Tariff Plan </label> -->
+                                        <!-- <select id="dataPlan" class="form-control" required> -->
+                                            <!-- <option disabled selected>Choose Tariff Plan</option> -->
+                                        <!-- </select> -->
+                                    <!-- </div> -->
+                                    <div class="container justify-content-center align-items-center">
+                                        <button type="submit" class="btn btn-primary waves-effect waves-light w-100">Buy Now</button>
+                                    </div>
+                                  </form>   
+                                </div>
+                              </div>                              
+                        </div>
+                    </div>
+                    <!-- container-fluid -->
+                </div>
+                <!-- End Page-content -->
+	{% include 'footer.html' %}
+
+    <script src="/static/libs/jquery/jquery.min.js"></script>
+    <script>
+        var mtn = [
+            {
+                "dataID": "148",
+                "dataName": "500MB = ₦170 for 1 month",
+                "dataAmount": "170"
+            },
+            {
+                "dataID": "150",
+                "dataName": "2GB = ₦620 for 1 month",
+                "dataAmount": "620"
+            },
+        ];
+        var glo = [
+            {
+                "dataID": "26",
+                "dataName": "2.3GB = ₦900 for 1 month",
+                "dataAmount": "900"
+            },
+            {
+                "dataID": "27",
+                "dataName": "5.25GB = ₦1800 for 1 month",
+                "dataAmount": "1800"
+            },
+        ];
+        var airtel = [
+            {
+                "dataID": "18",
+                "dataName": "1.5GB = ₦950 for 1 month",
+                "dataAmount": "950"
+            },
+            {
+                "dataID": "19",
+                "dataName": "4.5GB = ₦1820 for 1 month",
+                "dataAmount": "1820"
+            },
+        ];
+        var etisalat = [
+            {
+                "dataID": "13",
+                "dataName": "1.5GB = ₦900 for 1 month",
+                "dataAmount": "900"
+            },
+            {
+                "dataID": "14",
+                "dataName": "2GB = ₦1080 for 1 month",
+                "dataAmount": "1080"
+            },
+        ];
+        function getDataPlan() {
+            if (document.getElementById("network").value == "1"){
+                var ele = document.getElementById('dataPlan');
+                ele.options.length = 0;
+                for (var i = 0; i < mtn.length; i++) {
+                    // POPULATE SELECT ELEMENT WITH JSON.
+                    ele.innerHTML = ele.innerHTML +
+                        '<option value="' + mtn[i]['dataID'] + '" code="' + mtn[i]['dataAmount'] + '">' + mtn[i]['dataName'] + '</option>';
+                }
+            }
+            else if (document.getElementById("network").value == "2"){
+                var ele = document.getElementById('dataPlan');
+                ele.options.length = 0;
+                for (var i = 0; i < glo.length; i++) {
+                    // POPULATE SELECT ELEMENT WITH JSON.
+                    ele.innerHTML = ele.innerHTML +
+                        '<option value="' + glo[i]['dataID'] + '" code="' + glo[i]['dataAmount'] + '">' + glo[i]['dataName'] + '</option>';
+                }
+            }
+            else if (document.getElementById("network").value == "4"){
+                var ele = document.getElementById('dataPlan');
+                ele.options.length = 0;
+                for (var i = 0; i < airtel.length; i++) {
+                    // POPULATE SELECT ELEMENT WITH JSON.
+                    ele.innerHTML = ele.innerHTML +
+                        '<option value="' + airtel[i]['dataID'] + '" code="' + airtel[i]['dataAmount'] + '">' + airtel[i]['dataName'] + '</option>';
+                }
+            }
+            else if (document.getElementById("network").value == "3"){
+                var ele = document.getElementById('dataPlan');
+                ele.options.length = 0;
+                for (var i = 0; i < etisalat.length; i++) {
+                    // POPULATE SELECT ELEMENT WITH JSON.
+                    ele.innerHTML = ele.innerHTML +
+                        '<option value="' + etisalat[i]['dataID'] + '" code="' + etisalat[i]['dataAmount'] + '">' + etisalat[i]['dataName'] + '</option>';
+                }
+            }
+            else{
+                var ele = document.getElementById('dataPlan');
+                ele.options.length = 0;
+                ele.innerHTML = ele.innerHTML +
+                '<option value="">Select Network First</option>';
+            }        
+        }
+        $('#data').on('submit', function(e){
+            e.preventDefault();
+
+            $.ajax({
+                type : "POST",
+                url: "{% url 'electricity_purchase' %}", /* django ajax posting url  */
+                data: {
+                    network : $('#network').val(),
+                    mobile : $('#mobile').val(),
+                    data_plan : $('#dataPlan').val(),
+                    amount : $('#dataPlan').find(':selected').attr('code'),
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    dataType: "json",
+
+                },
+                beforeSend(){
+                    // console.log(new FormData());
+                },
+                
+                success: function(data){
+                    if (data.error){
+                        $('#data').find('.alert').removeClass('alert-success');
+                        $('#data').find('.alert').removeClass('none');
+                        $('#data').find('.alert').addClass('alert-warning');
+                        $('#output').html(data.error) /* response message */
+                    }
+                    else{
+                        $('#data').find('.alert').removeClass('alert-warning');
+                        $('#data').find('.alert').removeClass('none');
+                        $('#data').find('.alert').addClass('alert-success');
+                        $('#output').html(data.success) /* response message */
+                        // window.setTimeout(function(){
+                        //     $('#data').find('input[type=text], textarea').val('');
+                        // }, 700);
+                        // setTimeout(redirect, 2000);
+                        // function redirect(){
+                        // window.location.href = "{% url 'verify_account' %}";
+                        // }
+                    }
+                    
+                },
+
+                failure: function() {
+            //       console.log(typeof(data.msg));
+                    // $('.alert').html(data.msg+"hello")
+                    
+                }
+
+
+            });
+        });
+    </script>
+</div>
+
+{% endblock %}
