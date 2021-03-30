@@ -68,9 +68,8 @@ urlpatterns = [
     url(r'cable', views.cable, name='cable'),
     url(r'airtime', views.airtime, name='airtime'),
     url(r'electricity', views.electricity, name='electricity'),
-    # url(r'services', views.services, name='services'),
+    url(r'^create_wallet_history/$', views.create_wallet_history, name='create_wallet_history'),
     url(r'webhook', views.webhook, name='webhook'),
-    # url(r'dashboard', views.dashboard, name='dashboard'),
 ]
 
 
