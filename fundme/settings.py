@@ -45,6 +45,9 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -127,11 +130,13 @@ LOGOUT_REDIRECT_URL = '/'
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') 
+
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 AUTH_USER_MODEL = 'web.User'
 
 
-SITE_NAME = "Website Name Here"
+SITE_NAME = "AgentsHub"
 SITE_URL = 'http://localhost/'
 
 DEFAULT_EMAIL_SENDER = 'Website Name Here <mail.here@gmail.com>'
