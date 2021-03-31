@@ -615,12 +615,12 @@ def webhook (request):
 	return render (request, 'webhook.html')
 
 
-def get_cable_plan(request):
-	if request.is_ajax():
-		result = fetch_cable_plan()
-		print(result)
-		response = {"success": "yeah"}
-		return JsonResponse(response)
+# def get_cable_plan(request):
+# 	if request.is_ajax():
+# 		result = fetch_cable_plan()
+# 		print(result)
+# 		response = {"success": "yeah"}
+# 		return JsonResponse(response)
 
 def cable_service(request):
 	return render (request, 'cables.html')

@@ -14,12 +14,12 @@
                         <div class="row">
                             <div class="col-12">
                                 <div class="page-title-box d-flex align-items-center justify-content-between">
-                                    <h4 class="mb-0 font-size-18">My Wallet</h4>
+                                    <h4 class="mb-0 font-size-18">Fund Wallet</h4>
 
                                     <div class="page-title-right">
                                         <ol class="breadcrumb m-0">
-                                            <li class="breadcrumb-item"><a href="{% url 'index' %}">Home</a></li>
-                                            <li class="breadcrumb-item active">Wallet</li>
+                                            <li class="breadcrumb-item active"><a href="{% url 'index' %}">Home</a></li>
+                                            <li class="breadcrumb-item active">My Wallet</li>
                                         </ol>
                                     </div>
 
@@ -29,20 +29,83 @@
                         <!-- end page title -->
 
                         <div class="row">
-                            <div class="col-xl-12 col-md-12">
-                                <h2 class="text-muted text-center">Fund Your Wallet</h2>
+                            <div class="container w-50 h-100 text-center">
+                                <div class="row h-100 justify-content-center align-items-center">
+                                    <p class="text-muted">
+                                        By funding your wallet, you are legible to get the best of our services at TELEPALACE.
+                                        Kindly use our online payment method for payments between N100 and N2450 and get your 
+                                        wallet funded automatically as soon as payment is successful. <br><br>
 
-                                <p class="text-center d-flex justify-content-between align-items-center">
-                                    By funding your wallet, you are legible to get the best of our services at TELEPALACE. Kindly use our online payment method for payments between N100 and N2450 and get your wallet funded automatically as soon as payment is successful. 
-                                </p>
-                            </div>
+                                        <b>Instant Funding With Debit Card</b><br>
+                                      </p>
+                            
+                                  <form class="col-12" id="fundWallet">
+                                    <div id="output" class="text-center font-weight-600 uppercase hide alert"></div>
+                                    <div class="form-group">
+                                        <label for="old_password" class="col-lg-12 col-form-label">Enter Amount to Top Up</label>
+                                            <input id="amount" name="amount" type="text" class="form-control" autocomplete="off" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="col-xs-12">
+                                            <br>
+                                            <button class="btn btn-lg btn-primary" id="btn-pay" type="submit"> Fund Wallet</button>
+                                        </div>
+                                    </div>
+                                  </form>   
+                                </div>
+                              </div>                              
                         </div>
-
                     </div>
                     <!-- container-fluid -->
                 </div>
                 <!-- End Page-content -->
-    {% include 'footer.html' %}
+
+
+	{% include 'footer.html' %}
+    <script src="/static/libs/jquery/jquery.min.js"></script>
+    <script src="https://js.paystack.co/v1/inline.js"></script>
+<script type="text/javascript">
+  const paymentForm = document.getElementById('btn-pay');
+  paymentForm.addEventListener("click", payWithPaystack, false);
+
+  function payWithPaystack(e) {
+        e.preventDefault();
+        var user_amount = $("#amount").val();
+        let handler = PaystackPop.setup({
+            key: '{{ paystack_key }}', // Replace with your public key
+            email: '{{ user.email }}',
+            amount: user_amount * 100,
+            ref: ''+Math.floor((Math.random() * 1000000000) + 1), // generates a pseudo-unique reference. Please replace with a reference you generated. Or remove the line entirely so our API will generate one for you
+            // label: "Optional string that replaces customer email"
+            onClose: function(){
+                alert('Payment Cancelled.');
+            },
+            callback: function(response){
+              console.log(response);
+                $.ajax({
+                    url: 'http://localhost/verify_transaction?reference='+ response.reference,
+                    method: 'get',
+                    success: function (res) {
+                      console.log(res);
+                        // the transaction status is in response.data.status
+                        if(res.data.status == 'success') {
+                            let message = 'Payment completed!    Thanks.\n \n \nClick OK to Continue';
+                            alert(message);
+                            // location.reload();
+                        } else {
+                            let message = 'Payment was not completed! Click OK to Try Again';
+                            alert(message);
+                            // location.reload();
+                        }
+                    }
+                });
+                
+            }
+        });
+        handler.openIframe();
+    }
+</script>
 </div>
 
 {% endblock %}
