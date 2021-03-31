@@ -591,6 +591,7 @@ def cable_purchase(request):
 			response = {'error': 'You do not have have sufficient fund in your wallet.'}
 			return JsonResponse(response)
 		url = 'https://www.alexdata.com.ng/api/topup/'
+		# url = 'https://www.alexdata.com.ng/api/topup/'
 		headers = {
 			"Authorization": "Token " +settings.ALEX_DATA_KEY,
 			'Content-Type': 'application/json'
@@ -621,9 +622,9 @@ def cable_purchase(request):
 
 def get_electricity_plan(request):
 	if request.is_ajax():
-		# result = fetch_cable_plan()
-		# print(result)
-		# response = {"success": "yeah"}
+		result = fetch_electricity_plan()
+		print(result)
+		response = {"success": "yeah"}
 		return JsonResponse(response)
 
 def electricity_service(request):
@@ -631,37 +632,45 @@ def electricity_service(request):
 
 def electricity_purchase(request):
 	if request.is_ajax():
-		# network = request.POST.get("network", None)
-		# mobile = request.POST.get("mobile", None)
-		# amount = request.POST.get("amount", None)
-		# cable_plan = request.POST.get("cable_plan", None)
-		# wallet = UserWallet.objects.get(user=request.user)
-		# if Decimal(amount) > wallet.amount:
-			# response = {'error': 'You do not have have sufficient fund in your wallet.'}
-			# return JsonResponse(response)
+		network = request.POST.get("network", None)
+		mobile = request.POST.get("mobile", None)
+		amount = request.POST.get("amount", None)
+		plan_type = request.POST.get("plan_type", None)
+		wallet = UserWallet.objects.get(user=request.user)
+		if Decimal(amount) > wallet.amount:
+			response = {'error': 'You do not have have sufficient fund in your wallet.'}
+			return JsonResponse(response)
+		url = 'https://ringo/public/ringoPayments/public/api/test/b2b/'
 		# url = 'https://www.alexdata.com.ng/api/topup/'
-		# headers = {
+		headers = {
 			# "Authorization": "Token " +settings.ALEX_DATA_KEY,
-			# 'Content-Type': 'application/json'
-		# }
-		# datum = {
-			# "network": network,
-			# "mobile_number": mobile,
-			# "plan": cable_plan
-		# }
-		# x = requests.post(url, headers=headers, data=json.dumps(datum))
-		print(x.json())
-		# 
-		results = x.json()['success']
-		# if x.status_code == 500:
-			# response = {'error': "Error500: Internal Server Error"}
-		# elif x.json()['detail']:
-			# response = {'error': x.json()['detail']}
-		# elif x.json()['error']:
-			# response = {'error': x.json()['error']}
-		# else:
-			# response = {'success': x.json()['success']}
-			# user_wallet = UserWallet.objects.get(user=request.user)
-			# user_wallet.amount -= Decimal(amount)
-			# user_wallet.save()
+			# 'Host': 34.74.220.10
+			'email': 'member@mail.com',
+			'password': '12345678',
+			'Content-Type': 'application/json'
+		}
+		datum = {
+			"serviceCode": "P-ELECT",
+			"disco": network,
+			"meterNo": mobile,
+			"type": plan_type,
+			"amount": amount,
+			"phonenumber": "08118236545",
+			"request_id": "23213335433"
+		}
+		x = requests.post(url, headers=headers, data=json.dumps(datum))
+		# print(x.json())
+		
+		# results = x.json()['success']
+		if x.status_code == 500:
+			response = {'error': "Error500: Internal Server Error"}
+		elif x.json()['detail']:
+			response = {'error': x.json()['detail']}
+		elif x.json()['error']:
+			response = {'error': x.json()['error']}
+		else:
+			response = {'success': x.json()['success']}
+			user_wallet = UserWallet.objects.get(user=request.user)
+			user_wallet.amount -= Decimal(amount)
+			user_wallet.save()
 		return JsonResponse(response)

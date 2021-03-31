@@ -32,11 +32,11 @@
                         <div class="row">
                             <div class="container w-50 h-100">
                                 <div class="row h-100 justify-content-center align-items-center">
-                                  <form class="col-12" id="data">
+                                  <form class="col-12" id="electricity">
                                     <div id="output" class="text-center font-weight-600 uppercase hide alert"></div>
                                     <div class="form-group">
                                         <label for="network">Select Disco </label>
-                                        <select id="network" onchange="getDataPlan()" class="form-control">
+                                        <select id="network" class="form-control">
                                             <option selected>Choose Disco</option>
                                             <option value="1">IKEJA</option>
                                             <option value="2">IBEDC</option>
@@ -46,8 +46,8 @@
                                         </select>
                                     </div>
                                     <div class="form-group">
-                                        <label for="network">Select Tariff </label>
-                                        <select id="network" onchange="getDatPlan()" class="form-control">
+                                        <label for="plan_type">Select Tariff </label>
+                                        <select id="plan_type" class="form-control">
                                             <option selected>Choose Tariff</option>
                                             <option value="1">POSTPAID</option>
                                             <option value="2">PREPAID</option>
@@ -59,7 +59,7 @@
                                         <input type="text" pattern = "^[0]\d{11}$" maxlength="12" class="form-control" id="mobile" placeholder="090xxxxxxxx" required>
                                     </div>
                                     <div class="form-group">
-                                        <label for="mobile">Amount </label>
+                                        <label for="amount">Amount </label>
                                         <input type="number" class="form-control" id="amount" placeholder="5000" required>
                                     </div>
 
@@ -84,55 +84,7 @@
 
     <script src="/static/libs/jquery/jquery.min.js"></script>
     <script>
-        var mtn = [
-            {
-                "dataID": "148",
-                "dataName": "500MB = ₦170 for 1 month",
-                "dataAmount": "170"
-            },
-            {
-                "dataID": "150",
-                "dataName": "2GB = ₦620 for 1 month",
-                "dataAmount": "620"
-            },
-        ];
-        var glo = [
-            {
-                "dataID": "26",
-                "dataName": "2.3GB = ₦900 for 1 month",
-                "dataAmount": "900"
-            },
-            {
-                "dataID": "27",
-                "dataName": "5.25GB = ₦1800 for 1 month",
-                "dataAmount": "1800"
-            },
-        ];
-        var airtel = [
-            {
-                "dataID": "18",
-                "dataName": "1.5GB = ₦950 for 1 month",
-                "dataAmount": "950"
-            },
-            {
-                "dataID": "19",
-                "dataName": "4.5GB = ₦1820 for 1 month",
-                "dataAmount": "1820"
-            },
-        ];
-        var etisalat = [
-            {
-                "dataID": "13",
-                "dataName": "1.5GB = ₦900 for 1 month",
-                "dataAmount": "900"
-            },
-            {
-                "dataID": "14",
-                "dataName": "2GB = ₦1080 for 1 month",
-                "dataAmount": "1080"
-            },
-        ];
-        function getDataPlan() {
+        function getPlan_type() {
             if (document.getElementById("network").value == "1"){
                 var ele = document.getElementById('dataPlan');
                 ele.options.length = 0;
@@ -176,7 +128,7 @@
                 '<option value="">Select Network First</option>';
             }        
         }
-        $('#data').on('submit', function(e){
+        $('#electricity').on('submit', function(e){
             e.preventDefault();
 
             $.ajax({
@@ -185,8 +137,8 @@
                 data: {
                     network : $('#network').val(),
                     mobile : $('#mobile').val(),
-                    data_plan : $('#dataPlan').val(),
-                    amount : $('#dataPlan').find(':selected').attr('code'),
+                    data_plan : $('#plan_type').val(),
+                    amount : $('#amount').val(),
                     csrfmiddlewaretoken: '{{ csrf_token }}',
                     dataType: "json",
 
