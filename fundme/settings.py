@@ -25,10 +25,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'uifakkma7epple%p+7ak_bd$i+!^xuw8ojte&sh^uw=#r)t(7g'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-# ALLOWED_HOSTS = ["*"]
-ALLOWED_HOSTS = ["agentshub.herokuapp.com", "127.0.0.1"]
+ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = ["agentshub.herokuapp.com", "127.0.0.1"]
 
 
 # Application definition
@@ -157,4 +157,4 @@ ALEX_DATA_KEY = 'd79f5efe4e91921649c9e21a8957cc5d61d4be6e'
 ## cac884b94b321cb76263ebb973fdc20c test mode
  
 TWILIO_SID = 'AC4947d9b81b370deb9024940b70b2c8a1'
-TWILIO_AUTH_TOKEN = '19d346e5f21547ca93bed98f32cb1e38'
+TWILIO_AUTH_TOKEN = '60d5f00beabf14721dace52ae6c8895f'

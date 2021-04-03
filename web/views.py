@@ -58,11 +58,20 @@ def home(request):
 def index(request):
 	user_wallet = UserWallet.objects.get(user=request.user)
 	pay_history = PayHistory.objects.filter(user=request.user)
+	usernotification = UserNotification.objects.filter(user=request.user)
 	context = {
 		'user_wallet': user_wallet.amount,
-		'pay_history': pay_history
+		'pay_history': pay_history,
+		'notify': usernotification
 	}
 	return render(request, 'home.html', context)
+
+def notification(request):
+	title = request.POST.get('title')
+	message = request.POST.get('message')
+	is_featured = request.POST.get('is_featured')
+	return render(request, 'notification.html', context)
+
 
 def my_wallet(request):
 	return render(request, 'my-wallet.html')
@@ -364,24 +373,31 @@ def data_purchase(request):
 				user=user, purpose="airtime", paystack_charge_id=ref_code, amount=amount, paid=False, status=False
 			)
 			response = {'error': "Error500: Internal Server Error"}
+			status = 'error'
 		elif x.json()['detail']:
 			PayHistory.objects.create(
 				user=user, purpose="airtime", paystack_charge_id=ref_code, amount=amount, paid=False, status=False
 			)
 			response = {'error': x.json()['detail']}
+			status = 'error'
 		elif x.json()['error']:
 			PayHistory.objects.create(
 				user=user, purpose="airtime", paystack_charge_id=ref_code, amount=amount, paid=False, status=False
 			)
 			response = {'error': x.json()['error']}
+			status = 'error'
 		else:
 			PayHistory.objects.create(
 				user=user, purpose="airtime", paystack_charge_id=ref_code, amount=amount, paid=True, status=True
 			)
 			response = {'success': x.json()['success']}
+			status = 'success'
 			user_wallet = UserWallet.objects.get(user=request.user)
 			user_wallet.amount -= Decimal(amount)
 			user_wallet.save()
+		data_history = DataHistory.objects.create(user=request.user, amount="300", status=status, network=network, plan=data_plan, mobile_number=mobile, transaction_id=ref_code)
+		data_history.save()
+
 		return JsonResponse(response)
 
 def airtime_service(request):
@@ -416,14 +432,18 @@ def airtime_purchase(request):
 				user=user, purpose="airtime", paystack_charge_id=ref_code, amount=amount, paid=False, status=False
 			)
 			response = {'error': x.json()['error']}
+			status = "error"
 		else:
 			PayHistory.objects.create(
 				user=user, purpose="airtime", paystack_charge_id=ref_code, amount=amount, paid=True, status=True
 			)
 			response = {'success': x.json()['success']}
+			status = "success"
 			user_wallet = UserWallet.objects.get(user=request.user)
 			user_wallet.amount -= Decimal(amount)
 			user_wallet.save()
+		airtime_history = AirtimeHistory.objects.create(user=request.user, amount=amount, status=status, network=network, mobile_number=mobile, transaction_id=ref_code)
+		airtime_history.save()
 		return JsonResponse(response)
 
 def services (request):

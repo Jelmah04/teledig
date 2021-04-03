@@ -168,3 +168,70 @@ class Contactinfo(models.Model):
 
     def __str__ (self):
         return self.name
+
+
+class Notification(models.Model):
+	title = models.CharField(max_length=300)
+	message = models.TextField(default='', blank=True)
+	is_featured = models.BooleanField(default=True)
+	def __str__(self):
+		return self.title
+
+	class Meta:
+		db_table = 'Notifications'
+		managed = True
+		verbose_name = 'Notification'
+		verbose_name_plural = 'Notifications'
+
+class UserNotification(models.Model):
+	user = models.OneToOneField(User, on_delete=models.CASCADE, default=None, blank=True, null=True)
+	message = models.ForeignKey(Notification, on_delete=models.CASCADE, default=None)
+	read = models.BooleanField(default=False)
+	date = models.DateTimeField(auto_now_add=True)
+
+	def __str__(self):
+		return self.user
+
+	class Meta:
+		db_table = 'Usernotification'
+		managed = True
+		verbose_name = 'UserNotification'
+		verbose_name_plural = 'UserNotifications'
+
+ 
+class AirtimeHistory(models.Model):
+	user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
+	network = models.CharField(max_length=70)
+	mobile_number = models.CharField(max_length=11)
+	amount = models.CharField(max_length=30)
+	transaction_id = models.CharField(max_length=50)
+	status = models.CharField(max_length=30)
+	date = models.DateTimeField(auto_now_add=True)
+
+	def __str__(self):
+		return self.user
+
+	class Meta:
+		db_table = 'Airtime_history'
+		managed = True
+		verbose_name = 'AirtimeHistory'
+		verbose_name_plural = 'AirtimeHistorys'
+
+class DataHistory(models.Model):
+	user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
+	network = models.CharField(max_length=70)
+	plan = models.CharField(max_length=70)
+	mobile_number = models.CharField(max_length=11)
+	amount = models.CharField(max_length=30)
+	transaction_id = models.CharField(max_length=50)
+	status = models.CharField(max_length=30)
+	date = models.DateTimeField(auto_now_add=True)
+
+	def __str__(self):
+		return self.user
+
+	class Meta:
+		db_table = 'Data_history'
+		managed = True
+		verbose_name = 'DataHistory'
+		verbose_name_plural = 'DataHistorys'
