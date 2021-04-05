@@ -45,6 +45,7 @@ urlpatterns = [
     re_path(r'^reset/done/$', auth_views.PasswordResetCompleteView.as_view(template_name='password_reset_done.html'),
         name='password_reset_complete'),
     url(r'^change_password/$', views.change_password, name='change_password'),
+    url(r'^change_password_ajax/$', views.change_password_ajax, name='change_password_ajax'),
 
     url(r'dashboard', views.dashboard, name='dashboard'),
     url(r'^services/$', views.service, name='service'),
