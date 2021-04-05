@@ -58,7 +58,7 @@ def home(request):
 @login_required
 def index(request):
 	user_wallet = UserWallet.objects.get(user=request.user)
-	pay_history = PayHistory.objects.filter(user=request.user).reverse()
+	pay_history = PayHistory.objects.filter(user=request.user).order_by('id').reverse()[:10]
 	usernotification = UserNotification.objects.filter(user=request.user)
 	context = {
 		'user_wallet': user_wallet.amount,
@@ -164,10 +164,10 @@ def register_ajax(request):
 			full_name = obj.first_name + ' ' + obj.last_name
 
 			print('about to send otp')
-			sms_number = mobile[1:]
-			send_sms = client.messages.create(body='Hi' + 'Thanks for joining Telepalace. \n your OTP is:' + otp_code + '.',
-			from_ = '+13603299156',
-			to = '+234'+ sms_number)
+			# sms_number = mobile[1:]
+			# send_sms = client.messages.create(body='Hi' + 'Thanks for joining Telepalace. \n your OTP is:' + otp_code + '.',
+			# from_ = '+13603299156',
+			# to = '+234'+ sms_number)
 			print ('otp sent = '+ otp_code)
 
 			# subject_file = os.path.join(settings.BASE_DIR, "mail/register/subject.txt")
@@ -196,7 +196,12 @@ def register_ajax(request):
 				user=obj,
 				verified_code=otp_code
 			)
-			response = {'success': 'Registration successful. Kindly enter the OTP sent to your email address. ['+obj.email+']'}
+			# alert('Your OTP code is .....' + ' ' + otp_code)
+			response = {
+				# 'success': 'Registration successful. Kindly enter the OTP sent to your email address. ['+obj.email+'] \n ['+otp_code+']', 
+				'success': 'Registration successful. Kindly enter the OTP sent to your email address. ['+obj.email+']', 
+				'otp': otp_code
+			}
 			return JsonResponse(response)
 		else:
 			print('this form is not a valid one')
