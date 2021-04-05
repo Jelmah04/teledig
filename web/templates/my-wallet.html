@@ -99,10 +99,11 @@
     </div>
 
 
-
+{% include "footer.html" %}
 
 <script src="/static/libs/jquery/jquery.min.js"></script>
 <script src="https://js.paystack.co/v1/inline.js"></script>
+
 <script type="text/javascript">
   const paymentForm = document.getElementById('btn-pay');
   paymentForm.addEventListener("click", payWithPaystack, false);
@@ -147,10 +148,13 @@
 <<<<<<< HEAD
 <!--Ending of other parts for funding  -->
 
+<<<<<<< HEAD
 	{% include 'footer.html' %}
 =======
 >>>>>>> df1ef1d97216f15347910c361c31c365166cf425
+=======
+	<!-- {% include 'footer.html' %} -->
+>>>>>>> merge-resolve
 </div>
 
 {% endblock %}
-

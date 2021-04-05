@@ -67,6 +67,7 @@ def index(request):
 	}
 	return render(request, 'home.html', context)
 
+@login_required
 def notification(request):
 	title = request.POST.get('title')
 	message = request.POST.get('message')
@@ -74,6 +75,7 @@ def notification(request):
 	return render(request, 'notification.html', context)
 
 
+@login_required
 def my_wallet(request):
 	return render(request, 'my-wallet.html')
 
