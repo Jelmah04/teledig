@@ -58,7 +58,7 @@ def home(request):
 @login_required
 def index(request):
 	user_wallet = UserWallet.objects.get(user=request.user)
-	pay_history = PayHistory.objects.filter(user=request.user)
+	pay_history = PayHistory.objects.filter(user=request.user).reverse()
 	usernotification = UserNotification.objects.filter(user=request.user)
 	context = {
 		'user_wallet': user_wallet.amount,
