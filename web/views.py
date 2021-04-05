@@ -55,6 +55,7 @@ def home(request):
 		return redirect('index')
 	return render(request, 'index.html')
 
+@login_required
 def index(request):
 	user_wallet = UserWallet.objects.get(user=request.user)
 	pay_history = PayHistory.objects.filter(user=request.user)
@@ -322,7 +323,51 @@ def reset_pass(request):
 		return JsonResponse(response)
 	return render(request, 'password_reset_change.html')
 
-def change_password (request):
+
+
+def change_password_ajax(request):
+	if request.is_ajax():
+		old_password = request.POST.get("old_password", None)
+		new_password1 = request.POST.get("new_password1", None)
+		new_password2 = request.POST.get("new_password2", None)
+		user = request.user
+
+		if user.check_password(old_password):
+			# We declare some password verifications
+
+			upper_case = sum(1 for c in new_password1 if c.isupper())
+			digits = sum(1 for c in new_password1 if c.isdigit())
+			chars = sum(1 for c in new_password1 if not c.isalnum())
+			length = len(new_password1)
+
+			# We throw error if the above are passed
+
+			if new_password2 != new_password1:
+				response = {"error": "Password mismatch. Try again."}
+			elif length < 6:
+				response = {"error": "New Password is too short. Try another"}
+			elif not upper_case:
+				response = {"error": "New Password must contain at least one Uppercase."}
+			elif not digits:
+				response = {"error": "New Password must contain at least one number."}
+			elif not chars:
+				response = {"error": "New Password must contain at least one character."}
+			else:
+
+				# password = make_password(new_password)
+				user.set_password(new_password1)
+				user.save()
+				response = {"success": "Password successfully changed."}
+			return JsonResponse(response)
+		else:
+			response = {"error": "We could not understand your request."}
+			return JsonResponse(response)
+	else:
+		response = {"error": "Sorry. We could not process your request. Try again."}
+		return JsonResponse(response)
+
+@login_required
+def change_password(request):
 	return render (request, 'change_password.html')
 
 
@@ -575,7 +620,7 @@ def webhook (request):
 		lastname = request.user.last_name
 		amount = int(amount)*100
 
-        # print(email)print(firstname)print(lastname)print(amount)
+		# print(email)print(firstname)print(lastname)print(amount)
 		initialized = init_payment(firstname, lastname, email, amount)
 		print(initialized["data"]["authorization_url"])
 		amount = amount/100
@@ -584,18 +629,18 @@ def webhook (request):
 		wallet = UserWallet.objects.get(user=request.user)
 		old_amt = wallet + amount
 		wallet.save()
-        
+		
 		link = initialized['data']['authorization_url']
 		return HttpResponseRedirect(link)
 	return render (request, 'webhook.html')
 
 
-def get_cable_plan(request):
-	if request.is_ajax():
-		result = fetch_cable_plan()
-		print(result)
-		response = {"success": "yeah"}
-		return JsonResponse(response)
+# def get_cable_plan(request):
+# 	if request.is_ajax():
+# 		result = fetch_cable_plan()
+# 		print(result)
+# 		response = {"success": "yeah"}
+# 		return JsonResponse(response)
 
 def cable_service(request):
 	return render (request, 'cables.html')
