@@ -235,3 +235,18 @@ class DataHistory(models.Model):
 		managed = True
 		verbose_name = 'DataHistory'
 		verbose_name_plural = 'DataHistorys'
+
+
+class ManualFunding(models.Model):
+	email = models.CharField(max_length=500)
+	amount_to_fund = models.IntegerField()
+	date =  models.DateTimeField(auto_now_add=True)
+
+	def __str__(self):
+		return self.email
+
+	class Meta:
+		db_table = 'ManualFunding'
+		managed = True
+		verbose_name = 'ManualFunding'
+		verbose_name_plural = 'ManualFundings'

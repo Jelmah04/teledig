@@ -444,6 +444,9 @@ def data_purchase(request):
 			)
 			response = {'success': x.json()['success']}
 			status = 'success'
+		# data_history = DataHistory.objects.create(user=request.user, amount="300", status=status, network=network, plan=data_plan, mobile_number=mobile, transaction_id=ref_code)
+		# data_history.save()
+		# if (status == 'success'):
 			user_wallet = UserWallet.objects.get(user=request.user)
 			user_wallet.amount -= Decimal(amount)
 			user_wallet.save()
