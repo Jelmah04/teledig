@@ -58,12 +58,22 @@ def home(request):
 @login_required
 def index(request):
 	user_wallet = UserWallet.objects.get(user=request.user)
-	pay_history = PayHistory.objects.filter(user=request.user)
+	pay_history = PayHistory.objects.filter(user=request.user).order_by('id').reverse()[:10]
+	usernotification = UserNotification.objects.filter(user=request.user)
 	context = {
 		'user_wallet': user_wallet.amount,
-		'pay_history': pay_history
+		'pay_history': pay_history,
+		'notify': usernotification
 	}
 	return render(request, 'home.html', context)
+
+@login_required
+def notification(request):
+	title = request.POST.get('title')
+	message = request.POST.get('message')
+	is_featured = request.POST.get('is_featured')
+	return render(request, 'notification.html', context)
+
 
 @login_required
 def my_wallet(request):
@@ -145,6 +155,7 @@ def register_ajax(request):
 	if request.is_ajax():
 		form = SignUpForm(request.POST)
 		print('form submitted')
+		print(request.POST)
 		if form.is_valid():
 			print('this form is valid')
 			form.save()
@@ -155,11 +166,11 @@ def register_ajax(request):
 			full_name = obj.first_name + ' ' + obj.last_name
 
 			print('about to send otp')
-			sms_number = mobile[1:]
-			send_sms = client.messages.create(body='Hi' + 'Thanks for joining Telepalace. \n your OTP is:' + otp_code + '.',
-			from_ = '+13603299156',
-			to = '+234'+ sms_number)
-			print ('otp sent'+ otp_code)
+			# sms_number = mobile[1:]
+			# send_sms = client.messages.create(body='Hi' + 'Thanks for joining Telepalace. \n your OTP is:' + otp_code + '.',
+			# from_ = '+13603299156',
+			# to = '+234'+ sms_number)
+			print ('otp sent = '+ otp_code)
 
 			# subject_file = os.path.join(settings.BASE_DIR, "mail/register/subject.txt")
 			# subject = render_to_string(subject_file, {'name': obj.first_name, 'site_name': site_name})
@@ -187,7 +198,12 @@ def register_ajax(request):
 				user=obj,
 				verified_code=otp_code
 			)
-			response = {'success': 'Registration successful. Kindly enter the OTP sent to your email address. ['+obj.email+']'}
+			# alert('Your OTP code is .....' + ' ' + otp_code)
+			response = {
+				# 'success': 'Registration successful. Kindly enter the OTP sent to your email address. ['+obj.email+'] \n ['+otp_code+']', 
+				'success': 'Registration successful. Kindly enter the OTP sent to your email address. ['+obj.email+']', 
+				'otp': otp_code
+			}
 			return JsonResponse(response)
 		else:
 			print('this form is not a valid one')
@@ -409,24 +425,34 @@ def data_purchase(request):
 				user=user, purpose="airtime", paystack_charge_id=ref_code, amount=amount, paid=False, status=False
 			)
 			response = {'error': "Error500: Internal Server Error"}
+			status = 'error'
 		elif x.json()['detail']:
 			PayHistory.objects.create(
 				user=user, purpose="airtime", paystack_charge_id=ref_code, amount=amount, paid=False, status=False
 			)
 			response = {'error': x.json()['detail']}
+			status = 'error'
 		elif x.json()['error']:
 			PayHistory.objects.create(
 				user=user, purpose="airtime", paystack_charge_id=ref_code, amount=amount, paid=False, status=False
 			)
 			response = {'error': x.json()['error']}
+			status = 'error'
 		else:
 			PayHistory.objects.create(
 				user=user, purpose="airtime", paystack_charge_id=ref_code, amount=amount, paid=True, status=True
 			)
 			response = {'success': x.json()['success']}
+			status = 'success'
+		# data_history = DataHistory.objects.create(user=request.user, amount="300", status=status, network=network, plan=data_plan, mobile_number=mobile, transaction_id=ref_code)
+		# data_history.save()
+		# if (status == 'success'):
 			user_wallet = UserWallet.objects.get(user=request.user)
 			user_wallet.amount -= Decimal(amount)
 			user_wallet.save()
+		data_history = DataHistory.objects.create(user=request.user, amount="300", status=status, network=network, plan=data_plan, mobile_number=mobile, transaction_id=ref_code)
+		data_history.save()
+
 		return JsonResponse(response)
 
 def airtime_service(request):
@@ -461,14 +487,18 @@ def airtime_purchase(request):
 				user=user, purpose="airtime", paystack_charge_id=ref_code, amount=amount, paid=False, status=False
 			)
 			response = {'error': x.json()['error']}
+			status = "error"
 		else:
 			PayHistory.objects.create(
 				user=user, purpose="airtime", paystack_charge_id=ref_code, amount=amount, paid=True, status=True
 			)
 			response = {'success': x.json()['success']}
+			status = "success"
 			user_wallet = UserWallet.objects.get(user=request.user)
 			user_wallet.amount -= Decimal(amount)
 			user_wallet.save()
+		airtime_history = AirtimeHistory.objects.create(user=request.user, amount=amount, status=status, network=network, mobile_number=mobile, transaction_id=ref_code)
+		airtime_history.save()
 		return JsonResponse(response)
 
 def services (request):
@@ -636,6 +666,7 @@ def cable_purchase(request):
 			response = {'error': 'You do not have have sufficient fund in your wallet.'}
 			return JsonResponse(response)
 		url = 'https://www.alexdata.com.ng/api/topup/'
+		# url = 'https://www.alexdata.com.ng/api/topup/'
 		headers = {
 			"Authorization": "Token " +settings.ALEX_DATA_KEY,
 			'Content-Type': 'application/json'
@@ -644,6 +675,63 @@ def cable_purchase(request):
 			"network": network,
 			"mobile_number": mobile,
 			"plan": cable_plan
+		}
+		x = requests.post(url, headers=headers, data=json.dumps(datum))
+		# print(x.json())
+		
+		# results = x.json()['success']
+		if x.status_code == 500:
+			response = {'error': "Error500: Internal Server Error"}
+		elif x.json()['detail']:
+			response = {'error': x.json()['detail']}
+		elif x.json()['error']:
+			response = {'error': x.json()['error']}
+		else:
+			response = {'success': x.json()['success']}
+			user_wallet = UserWallet.objects.get(user=request.user)
+			user_wallet.amount -= Decimal(amount)
+			user_wallet.save()
+		return JsonResponse(response)
+
+
+
+def get_electricity_plan(request):
+	if request.is_ajax():
+		result = fetch_electricity_plan()
+		print(result)
+		response = {"success": "yeah"}
+		return JsonResponse(response)
+
+def electricity_service(request):
+	return render (request, 'electricitys.html')
+
+def electricity_purchase(request):
+	if request.is_ajax():
+		network = request.POST.get("network", None)
+		mobile = request.POST.get("mobile", None)
+		amount = request.POST.get("amount", None)
+		plan_type = request.POST.get("plan_type", None)
+		wallet = UserWallet.objects.get(user=request.user)
+		if Decimal(amount) > wallet.amount:
+			response = {'error': 'You do not have have sufficient fund in your wallet.'}
+			return JsonResponse(response)
+		url = 'https://ringo/public/ringoPayments/public/api/test/b2b/'
+		# url = 'https://www.alexdata.com.ng/api/topup/'
+		headers = {
+			# "Authorization": "Token " +settings.ALEX_DATA_KEY,
+			# 'Host': 34.74.220.10
+			'email': 'member@mail.com',
+			'password': '12345678',
+			'Content-Type': 'application/json'
+		}
+		datum = {
+			"serviceCode": "P-ELECT",
+			"disco": network,
+			"meterNo": mobile,
+			"type": plan_type,
+			"amount": amount,
+			"phonenumber": "08118236545",
+			"request_id": "23213335433"
 		}
 		x = requests.post(url, headers=headers, data=json.dumps(datum))
 		# print(x.json())

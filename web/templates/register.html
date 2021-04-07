@@ -244,10 +244,13 @@
                     window.setTimeout(function(){
                         $('#signup').find('input[type=text], textarea').val('');
                     }, 700);
-                    setTimeout(redirect, 2000);
-                    function redirect(){
-                       window.location.href = "{% url 'verify_account' %}";
-                    }
+                    // setTimeout(redirect, 2000);
+                    if (!alert(data.otp)){
+                        window.location.href = "{% url 'verify_account' %}";
+                    };
+                    // function redirect(){
+                    //    window.location.href = "{% url 'verify_account' %}";
+                    // }
                 }
                 
                },
@@ -320,7 +323,7 @@
         var username = $('#username').val();
 
         // preventDefault();
-        if (username.length <= 5){
+        if (username.length < 3){
                 $('#usernameMessage').removeClass();
                 $('#usernameMessage').addClass('InUse');
                 $('#usernameMessage').html('Username is too short');

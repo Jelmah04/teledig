@@ -27,7 +27,8 @@ SECRET_KEY = 'uifakkma7epple%p+7ak_bd$i+!^xuw8ojte&sh^uw=#r)t(7g'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = ["agentshub.herokuapp.com", "127.0.0.1"]
 
 
 # Application definition
@@ -45,6 +46,9 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -126,12 +130,15 @@ LOGOUT_REDIRECT_URL = '/'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') 
 STATIC_URL = '/static/'
+
+
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 AUTH_USER_MODEL = 'web.User'
 
 
-SITE_NAME = "Website Name Here"
+SITE_NAME = "AgentsHub"
 SITE_URL = 'http://localhost/'
 
 DEFAULT_EMAIL_SENDER = 'Website Name Here <mail.here@gmail.com>'
@@ -150,4 +157,4 @@ ALEX_DATA_KEY = 'd79f5efe4e91921649c9e21a8957cc5d61d4be6e'
 ## cac884b94b321cb76263ebb973fdc20c test mode
  
 TWILIO_SID = 'AC4947d9b81b370deb9024940b70b2c8a1'
-TWILIO_AUTH_TOKEN = 'fd68b1d10da2eb3853938015794026a1'
+TWILIO_AUTH_TOKEN = '60d5f00beabf14721dace52ae6c8895f'

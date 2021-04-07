@@ -57,6 +57,9 @@ urlpatterns = [
     url(r'^services/cable/$', views.cable_service, name='cables'),
     url(r'^services/cable/purchase/$', views.cable_purchase, name='cable_purchase'),
 
+    url(r'^services/electricity/$', views.electricity_service, name='electricitys'),
+    url(r'^services/electricity/purchase/$', views.electricity_purchase, name='electricity_purchase'),
+
     url(r'service', views.services, name='services'),
     url(r'contact', views.contact, name='contact'),
     url(r'^reach_us/$', views.contactus, name='reach'),
