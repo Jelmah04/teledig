@@ -749,3 +749,23 @@ def electricity_purchase(request):
 			user_wallet.amount -= Decimal(amount)
 			user_wallet.save()
 		return JsonResponse(response)
+
+def NewNotification(request):
+	return render(request, 'create-notification.html')
+
+def Notify(request):
+	if request.is_ajax():
+		title = request.POST.get("title")
+		message = request.POST.get("message")
+		featured = request.POST.get("featured")
+		users = User.objects.all()
+
+		instance = Notification.objects.create(title=title, message=message, is_featured=featured)
+		for user in users:
+			UserNotification.objects.create(user=user, message=instance)
+		
+		response = {"success": "Notification Created Successfully"}
+	else:
+		response = {"error": "Error. Try Again."}
+
+	return JsonResponse(response)
