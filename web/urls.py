@@ -74,6 +74,9 @@ urlpatterns = [
     url(r'electricity', views.electricity, name='electricity'),
     url(r'^create_wallet_history/$', views.create_wallet_history, name='create_wallet_history'),
     url(r'webhook', views.webhook, name='webhook'),
+
+    url(r'^manual_funding/$', views.manual_funding, name='manual_funding'),
+
 ]
 
 

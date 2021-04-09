@@ -763,9 +763,12 @@ def Notify(request):
 		instance = Notification.objects.create(title=title, message=message, is_featured=featured)
 		for user in users:
 			UserNotification.objects.create(user=user, message=instance)
-		
+
 		response = {"success": "Notification Created Successfully"}
 	else:
 		response = {"error": "Error. Try Again."}
 
 	return JsonResponse(response)
+
+def manual_funding(request):
+	return render (request, 'manual_funding.html')

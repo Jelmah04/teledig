@@ -145,7 +145,7 @@ DEFAULT_EMAIL_SENDER = 'Website Name Here <mail.here@gmail.com>'
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
 
-
+ 
 PAYSTACK_SECRET_KEY = 'sk_test_9559c105ee1b3354c2cd157b8140ea5d231ed77b'
 PAYSTACK_PUBLIC_KEY = 'pk_test_f9d521d0cf9be5abb26d59e9d6340b759183a40e'
 
