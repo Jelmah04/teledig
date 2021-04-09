@@ -13,7 +13,7 @@
             <div class="row">
                 <div class="col-12">
                     <div class="page-title-box d-flex align-items-center justify-content-between">
-                        <h4 class="mb-0 font-size-18">Contact Us</h4>
+                        <h4 class="mb-0 font-size-18">Manual Funding</h4>
 
                         <div class="page-title-right">
                             <ol class="breadcrumb m-0">
@@ -133,7 +133,7 @@
 
             $.ajax({
                 type : "POST",
-                url: "{% url 'contact' %}", /* django ajax posting url  */
+                url: "{% url 'manual_funding' %}", /* django ajax posting url  */
                 data: {
                     name : $('#name').val(),
                     email : $('#email').val(),
