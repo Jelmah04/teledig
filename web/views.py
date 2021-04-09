@@ -770,5 +770,25 @@ def Notify(request):
 
 	return JsonResponse(response)
 
+<<<<<<< HEAD
 def manual_funding(request):
 	return render (request, 'manual_funding.html')
+=======
+
+def all_notifications(request):
+	notification = UserNotification.objects.filter(user=request.user)
+	context = {
+		'notification': notification
+	}
+	return render(request, 'notifications.html', context)
+
+
+def single_notification(request, pk):
+	notification = UserNotification.objects.get(pk=pk)
+	notification.read = True
+	notification.save()
+	context = {
+		'notification': notification
+	}
+	return render(request, 'read-notification.html', context)
+>>>>>>> bf0e698eba247fa84501fb1fe7af4b9988f729ea
