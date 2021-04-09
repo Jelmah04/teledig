@@ -75,13 +75,10 @@ urlpatterns = [
     url(r'^create_wallet_history/$', views.create_wallet_history, name='create_wallet_history'),
     url(r'webhook', views.webhook, name='webhook'),
 
-<<<<<<< HEAD
     url(r'^manual_funding/$', views.manual_funding, name='manual_funding'),
 
-=======
     url(r'^notifications/$', views.all_notifications, name='notifications'),
     url(r'^notifications/notify/(?P<pk>[\w.@+-/]+)/$', views.single_notification, name='notification'),
->>>>>>> bf0e698eba247fa84501fb1fe7af4b9988f729ea
 ]
 
 
