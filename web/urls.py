@@ -74,6 +74,9 @@ urlpatterns = [
     url(r'electricity', views.electricity, name='electricity'),
     url(r'^create_wallet_history/$', views.create_wallet_history, name='create_wallet_history'),
     url(r'webhook', views.webhook, name='webhook'),
+
+    url(r'^notifications/$', views.all_notifications, name='notifications'),
+    url(r'^notifications/notify/(?P<pk>[\w.@+-/]+)/$', views.single_notification, name='notification'),
 ]
 
 

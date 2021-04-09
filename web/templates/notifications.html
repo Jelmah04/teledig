@@ -1,0 +1,79 @@
+{% extends 'app.html' %}
+
+{% block body %}
+{% load humanize %}
+ <!-- ============================================================== -->
+            <!-- Start right Content here -->
+            <!-- ============================================================== -->
+            <div class="main-content">
+
+                <div class="page-content">
+                    <div class="container-fluid">
+
+                        <!-- start page title -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="page-title-box d-flex align-items-center justify-content-between">
+                                    <h4 class="mb-0 font-size-18">Notifications</h4>
+
+                                    <div class="page-title-right">
+                                        <ol class="breadcrumb m-0">
+                                            <li class="breadcrumb-item active"><a href="{% url 'index' %}">Home</a></li>
+                                            <li class="breadcrumb-item active">Notifications</li>
+                                        </ol>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end page title -->
+
+                        <div class="row">
+                            <div class="col-12">
+                                <!-- Left sidebar -->
+                                <div class="email-leftbar card">
+        
+        
+                                </div>
+                                <!-- End Left sidebar -->
+        
+        
+                                <!-- Right Sidebar -->
+                                <div class="email-rightbar mb-3">
+                                    
+                                    <div class="card">
+                                        <ul class="message-list">
+                                            {% for notice in notification %}
+                                            <li {% if not notice.read %}class="unread" {% endif %}>
+                                                <div class="col-mail col-mail-1">
+                                                    <a href="{% url 'notification' notice.pk %}" class="title">{{ notice.message.title }}</a><span class="star-toggle far fa-star"></span>
+                                                </div>
+                                                <div class="col-mail col-mail-2">
+                                                    <a href="{% url 'notification' notice.pk %}" class="subject">
+                                                        {% if notice.message.is_featured %}<span class="badge-success badge mr-2">Featured</span>{% endif %}
+                                                        <span class="teaser">
+                                                            {{ notice.message.message }}
+                                                        </span>
+                                                    </a>
+                                                    <div class="date">{{ notice.date|naturaltime }}</div>
+                                                </div>
+                                            </li>
+                                            {% endfor %}
+        
+                                        </ul>
+        
+                                    </div> <!-- card -->
+    
+        
+                                </div> <!-- end Col-9 -->
+        
+                            </div>
+                        </div>
+                    </div>
+                    <!-- container-fluid -->
+                </div>
+                <!-- End Page-content -->
+	{% include 'footer.html' %}
+</div>
+
+{% endblock %}

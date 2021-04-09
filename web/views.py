@@ -769,3 +769,21 @@ def Notify(request):
 		response = {"error": "Error. Try Again."}
 
 	return JsonResponse(response)
+
+
+def all_notifications(request):
+	notification = UserNotification.objects.filter(user=request.user)
+	context = {
+		'notification': notification
+	}
+	return render(request, 'notifications.html', context)
+
+
+def single_notification(request, pk):
+	notification = UserNotification.objects.get(pk=pk)
+	notification.read = True
+	notification.save()
+	context = {
+		'notification': notification
+	}
+	return render(request, 'read-notification.html', context)
