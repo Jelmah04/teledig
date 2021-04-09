@@ -170,6 +170,22 @@ class Contactinfo(models.Model):
         return self.name
 
 
+class UserNotification(models.Model):
+	user = models.OneToOneField(User, on_delete=models.CASCADE, default=None, blank=True, null=True)
+	message = models.ForeignKey("Notification", on_delete=models.CASCADE, default=None)
+	read = models.BooleanField(default=False)
+	date = models.DateTimeField(auto_now_add=True)
+
+	def __str__(self):
+		return self.user.first_name + self.user.last_name
+
+	class Meta:
+		db_table = 'Usernotification'
+		managed = True
+		verbose_name = 'UserNotification'
+		verbose_name_plural = 'UserNotifications'
+
+
 class Notification(models.Model):
 	title = models.CharField(max_length=300)
 	message = models.TextField(default='', blank=True)
@@ -183,20 +199,12 @@ class Notification(models.Model):
 		verbose_name = 'Notification'
 		verbose_name_plural = 'Notifications'
 
-class UserNotification(models.Model):
-	user = models.OneToOneField(User, on_delete=models.CASCADE, default=None, blank=True, null=True)
-	message = models.ForeignKey(Notification, on_delete=models.CASCADE, default=None)
-	read = models.BooleanField(default=False)
-	date = models.DateTimeField(auto_now_add=True)
-
-	def __str__(self):
-		return self.user
-
-	class Meta:
-		db_table = 'Usernotification'
-		managed = True
-		verbose_name = 'UserNotification'
-		verbose_name_plural = 'UserNotifications'
+@receiver(post_save, sender=Notification)
+def create_auth_token(sender, instance=None, created=False, **kwargs):
+	if created:
+		users = User.objects.all().exclude(is_superuser=True)
+		for user in users:
+			UserNotification.objects.create(user=user, message=instance)
 
  
 class AirtimeHistory(models.Model):
