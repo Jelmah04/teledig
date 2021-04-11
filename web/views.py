@@ -199,6 +199,7 @@ def register_ajax(request):
 				verified_code=otp_code
 			)
 			# alert('Your OTP code is .....' + ' ' + otp_code)
+			UserWallet.objects.create(user=obj, walletID=obj.mobile)
 			response = {
 				# 'success': 'Registration successful. Kindly enter the OTP sent to your email address. ['+obj.email+'] \n ['+otp_code+']', 
 				'success': 'Registration successful. Kindly enter the OTP sent to your email address. ['+obj.email+']', 
