@@ -199,6 +199,7 @@ def register_ajax(request):
 				verified_code=otp_code
 			)
 			# alert('Your OTP code is .....' + ' ' + otp_code)
+			UserWallet.objects.create(user=obj, walletID=obj.mobile)
 			response = {
 				# 'success': 'Registration successful. Kindly enter the OTP sent to your email address. ['+obj.email+'] \n ['+otp_code+']', 
 				'success': 'Registration successful. Kindly enter the OTP sent to your email address. ['+obj.email+']', 
@@ -763,13 +764,15 @@ def Notify(request):
 		instance = Notification.objects.create(title=title, message=message, is_featured=featured)
 		for user in users:
 			UserNotification.objects.create(user=user, message=instance)
-		
+
 		response = {"success": "Notification Created Successfully"}
 	else:
 		response = {"error": "Error. Try Again."}
 
 	return JsonResponse(response)
 
+def manual_funding(request):
+	return render (request, 'manual_funding.html')
 
 def all_notifications(request):
 	notification = UserNotification.objects.filter(user=request.user)
