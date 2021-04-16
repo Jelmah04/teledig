@@ -77,7 +77,10 @@ def notification(request):
 
 @login_required
 def my_wallet(request):
-	return render(request, 'my-wallet.html')
+	context = {
+		'paystack_key': settings.PAYSTACK_PUBLIC_KEY
+	}
+	return render(request, 'my-wallet.html', context)
 
 def signin(request):
 	if request.user.is_authenticated:
@@ -165,12 +168,12 @@ def register_ajax(request):
 			site_name = settings.SITE_NAME
 			full_name = obj.first_name + ' ' + obj.last_name
 
-			print('about to send otp')
+			# print('about to send otp')
 			# sms_number = mobile[1:]
 			# send_sms = client.messages.create(body='Hi' + 'Thanks for joining Telepalace. \n your OTP is:' + otp_code + '.',
 			# from_ = '+13603299156',
 			# to = '+234'+ sms_number)
-			print ('otp sent = '+ otp_code)
+			# print ('otp sent = '+ otp_code)
 
 			# subject_file = os.path.join(settings.BASE_DIR, "mail/register/subject.txt")
 			# subject = render_to_string(subject_file, {'name': obj.first_name, 'site_name': site_name})
@@ -207,7 +210,7 @@ def register_ajax(request):
 			}
 			return JsonResponse(response)
 		else:
-			print('this form is not a valid one')
+			# print('this form is not a valid one')
 			response = {'error': 'We could not process your request. Try again.'}
 			return JsonResponse(response)
 	else:
@@ -427,13 +430,13 @@ def data_purchase(request):
 			)
 			response = {'error': "Error500: Internal Server Error"}
 			status = 'error'
-		elif x.json()['detail']:
+		elif 'detail' in x.json():
 			PayHistory.objects.create(
-				user=user, purpose="airtime", paystack_charge_id=ref_code, amount=amount, paid=False, status=False
+				user=user, purpose="airtime", paystack_charge_id=ref_code, amount=amount, paid=False, status=True
 			)
-			response = {'error': x.json()['detail']}
+			response = {'error': x.json()}
 			status = 'error'
-		elif x.json()['error']:
+		elif 'error' in x.json():
 			PayHistory.objects.create(
 				user=user, purpose="airtime", paystack_charge_id=ref_code, amount=amount, paid=False, status=False
 			)
@@ -483,7 +486,7 @@ def airtime_purchase(request):
 		ref_code = 'REFNO'+secrets.token_hex(7)
 		
 		# results = x.json()['success']
-		if x.json()['error']:
+		if 'error' in x.json():
 			PayHistory.objects.create(
 				user=user, purpose="airtime", paystack_charge_id=ref_code, amount=amount, paid=False, status=False
 			)
@@ -491,15 +494,15 @@ def airtime_purchase(request):
 			status = "error"
 		else:
 			PayHistory.objects.create(
-				user=user, purpose="airtime", paystack_charge_id=ref_code, amount=amount, paid=True, status=True
+				user=user, purpose="airtime", paystack_charge_id=x.json()['id'], amount=amount, paid=True, status=True
 			)
-			response = {'success': x.json()['success']}
+			response = {'good': 'You have successfully recharged '+x.json()['mobile_number']}
 			status = "success"
 			user_wallet = UserWallet.objects.get(user=request.user)
 			user_wallet.amount -= Decimal(amount)
 			user_wallet.save()
-		airtime_history = AirtimeHistory.objects.create(user=request.user, amount=amount, status=status, network=network, mobile_number=mobile, transaction_id=ref_code)
-		airtime_history.save()
+		airtime_history = AirtimeHistory.objects.create(user=request.user, amount=amount, status=status, network=network, mobile_number=mobile, transaction_id=x.json()['id'])
+		# airtime_history.save()
 		return JsonResponse(response)
 
 def services (request):
@@ -527,6 +530,7 @@ def funding (request):
 	context = {
 		'paystack_key': settings.PAYSTACK_PUBLIC_KEY
 	}
+	# print(context)
 	return render (request, 'funding.html', context)
 
 

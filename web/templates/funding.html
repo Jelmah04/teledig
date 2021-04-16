@@ -97,6 +97,7 @@
 <script src="/static/libs/jquery/jquery.min.js"></script>
 <script src="https://js.paystack.co/v1/inline.js"></script>
 <script type="text/javascript">
+  alert('{{ paystack_key }}');
   const paymentForm = document.getElementById('btn-pay');
   paymentForm.addEventListener("click", payWithPaystack, false);
 

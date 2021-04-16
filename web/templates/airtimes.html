@@ -53,7 +53,7 @@
                                         <input type="number" class="form-control" id="amount" placeholder="100" required>
                                     </div>
                                     <div class="container justify-content-center align-items-center">
-                                        <button type="submit" class="btn btn-primary waves-effect waves-light w-100">Buy Now</button>
+                                        <button type="submit" id="submit" class="btn btn-primary waves-effect waves-light w-100">Buy Now</button>
                                     </div>
                                   </form>   
                                 </div>
@@ -83,9 +83,13 @@
                 },
                 beforeSend(){
                     // console.log(new FormData());
+                    $("#submit").text("Please wait...");
+                    $("#submit").attr("disabled", "disabled");
                 },
                 
                 success: function(data){
+                    $("#submit").text("Buy Now");
+                    $("#submit").removeAttr("disabled");
                     if (data.error){
                         $('#airtime').find('.alert').removeClass('alert-success');
                         $('#airtime').find('.alert').removeClass('none');
@@ -96,7 +100,7 @@
                         $('#airtime').find('.alert').removeClass('alert-warning');
                         $('#airtime').find('.alert').removeClass('none');
                         $('#airtime').find('.alert').addClass('alert-success');
-                        $('#output').html(data.success) /* response message */
+                        $('#output').html(data.good) /* response message */
                         // window.setTimeout(function(){
                         //     $('#airtime').find('input[type=text], textarea').val('');
                         // }, 700);
