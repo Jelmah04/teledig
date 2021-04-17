@@ -108,6 +108,7 @@
   const paymentForm = document.getElementById('btn-pay');
   paymentForm.addEventListener("click", payWithPaystack, false);
 
+
   function payWithPaystack(e) {
         e.preventDefault();
         var user_amount = $("#amount").val();
@@ -121,21 +122,22 @@
                 alert('Payment Cancelled.');
             },
             callback: function(response){
-              console.log(response);
                 $.ajax({
-                    url: 'http://localhost/verify_transaction?reference='+ response.reference,
+                    url: "http://localhost:90/verify_transaction?reference="+ response.reference,
                     method: 'get',
                     success: function (res) {
-                      console.log(res);
                         // the transaction status is in response.data.status
                         if(res.data.status == 'success') {
                             let message = 'Payment completed!    Thanks.\n \n \nClick OK to Continue';
-                            alert(message);
+                            if(!alert(message)){
+                                window.location.href = "{% url 'index' %}";
+                            };
                             // location.reload();
                         } else {
                             let message = 'Payment was not completed! Click OK to Try Again';
-                            alert(message);
-                            // location.reload();
+                            if(!alert(message)){
+                                window.location.href = "{% url 'index' %}";
+                            };
                         }
                     }
                 });
