@@ -10,4 +10,5 @@ sent_emails/
 manage.py
 .vscode
 db.sqlite3
+*settings.py
 # *migrations
