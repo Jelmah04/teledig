@@ -123,7 +123,7 @@
             },
             callback: function(response){
                 $.ajax({
-                    url: "http://localhost:90/verify_transaction?reference="+ response.reference,
+                    url: "{% url 'verify_transaction' %}?reference="+ response.reference,
                     method: 'get',
                     success: function (res) {
                         // the transaction status is in response.data.status
