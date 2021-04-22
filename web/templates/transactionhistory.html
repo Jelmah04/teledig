@@ -37,19 +37,18 @@
                                                 <thead class="thead-light">
                                                     <tr>
                                                         <th>Refrence</th>
-                                                        <th>Date</th>
                                                         <th>Amount</th>
                                                         <th>Payment Status</th>
                                                         <th>Request</th>
+                                                        <th>Pre Balance</th>
+                                                        <th>Post Balance</th>
+                                                        <th>Date</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     {% for pay in pay_history %}
                                                     <tr>
                                                         <td><a href="javascript: void(0);" class="text-body font-weight-bold">#{{ pay.paystack_charge_id }}</a> </td>
-                                                        <td>
-                                                            {{ pay.date.date }}
-                                                        </td>
                                                         <td>
                                                             ₦{{ pay.amount|intcomma }}
                                                         </td>
@@ -74,6 +73,16 @@
                                                             {% else %}
                                                                 No Purpose for this transaction
                                                             {% endif %}
+                                                        </td>
+                                                        <td>
+                                                            ₦{{ user_wallet.prev_amount|intcomma }}
+                                                        </td>
+                                                        <td>
+                                                            ₦{{ user_wallet.amount|intcomma }}
+                                                        </td>
+                                                        <td>
+                                                            {{ pay.date.date }} <br/>
+                                                            {{ pay.date.time }}
                                                         </td>
                                                     </tr>
                                                     {% endfor %}
