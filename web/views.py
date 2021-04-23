@@ -407,6 +407,10 @@ def data_purchase(request):
 		amount = request.POST.get("amount", None)
 		data_plan = request.POST.get("data_plan", None)
 		wallet = UserWallet.objects.get(user=request.user)
+		print(mobile)
+		print(amount)
+		print(data_plan)
+		print(wallet.amount)
 		if Decimal(amount) > wallet.amount:
 			response = {'error': 'You do not have have sufficient fund in your wallet.'}
 			return JsonResponse(response)
