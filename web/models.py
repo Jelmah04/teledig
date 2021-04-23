@@ -25,11 +25,6 @@ class UserWallet(models.Model):
 	def __str__(self):
 		return self.user.first_name + ' ' + self.user.last_name
 
-@receiver(pre_save, sender=UserWallet)
-def update_amount(sender, instance, *args, **kwargs):
-	prev = instance.amount
-	instance.prev_amount + prev
-
 
 class UserManager(BaseUserManager):
 	"""

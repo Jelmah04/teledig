@@ -7,8 +7,8 @@ migrations
 *__pycache__
 __pycache__
 sent_emails/
-manage.py
 .vscode
 db.sqlite3
+
 fundme/settings.py
-# *migrations
+conf
