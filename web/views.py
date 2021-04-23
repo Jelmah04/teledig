@@ -62,6 +62,7 @@ def index(request):
 	usernotification = UserNotification.objects.filter(user=request.user)
 	context = {
 		'user_wallet': user_wallet.amount,
+		'prev_amt': user_wallet.prev_amount,
 		'pay_history': pay_history,
 		'notify': usernotification
 	}
@@ -388,6 +389,7 @@ def dashboard (request):
 	pay_history = PayHistory.objects.filter(user=request.user).order_by('id').reverse()[:4]
 	context = {
 		'user_wallet': user_wallet.amount,
+		'prev_amt': user_wallet.prev_amount,
 		'pay_history': pay_history
 	}
 	return render (request, 'dashboard.html', context)
@@ -548,6 +550,10 @@ def create_wallet_history(request):
 class Verify_Payment(APIView):
 	def get(self, request):
 		user = request.user
+		user_wallet = UserWallet.objects.get(user=user)
+		prev_amt = user_wallet.amount
+		# user_wallet.prev_amount = prev_amt
+		# user_wallet.save()
 		reference = request.GET.get("reference")
 		url = 'https://api.paystack.co/transaction/verify/'+reference
 		headers = {
@@ -557,15 +563,19 @@ class Verify_Payment(APIView):
 		if x.json()['status'] == False:
 			return False
 		results = x.json()
-		print(results['data']['amount'])
 		if results['data']['status'] == 'success':
 			amt= results["data"]["amount"]/100
+			user_wallet.prev_amount = prev_amt
+			user_wallet.save()
 			PayHistory.objects.create(
 				user=user, purpose="wallet",
 				paystack_charge_id=results["data"]["reference"],
 				amount=amt, paid=True, status=True
 			)
 		else:
+			user_wallet.prev_amount = prev_amt
+			user_wallet.save()
+			amt= results["data"]["amount"]/100
 			PayHistory.objects.create(
 				user=user, purpose="wallet",
 				paystack_charge_id=results["data"]["reference"],

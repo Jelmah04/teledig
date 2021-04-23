@@ -12,4 +12,3 @@ sent_emails/
 db.sqlite3
 fundme/settings.py
 conf
-# *migrations
