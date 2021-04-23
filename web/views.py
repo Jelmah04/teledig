@@ -553,17 +553,19 @@ class Verify_Payment(APIView):
 		if x.json()['status'] == False:
 			return False
 		results = x.json()
+		print(results['data']['amount'])
 		if results['data']['status'] == 'success':
+			amt= results["data"]["amount"]/100
 			PayHistory.objects.create(
 				user=user, purpose="wallet",
 				paystack_charge_id=results["data"]["reference"],
-				amount=results["data"]["amount"], paid=True, status=True
+				amount=amt, paid=True, status=True
 			)
 		else:
 			PayHistory.objects.create(
 				user=user, purpose="wallet",
 				paystack_charge_id=results["data"]["reference"],
-				amount=results["data"]["amount"], paid=True, status=False
+				amount=amt, paid=True, status=False
 			)
 		current_wallet = UserWallet.objects.get(user=user)
 		current_wallet.amount += (results["data"]["amount"] /Decimal(100))
@@ -617,13 +619,15 @@ def contact(request):
 			response = {"error": "Sorry, try again please."}
 		return JsonResponse(response)
 
-def webhook (request):
-	return render (request, 'webhook.html')
+# def webhook (request):
+# 	return render (request, 'webhook.html')
 
 def transactionhistory (request):
 	pay_history = PayHistory.objects.filter(user=request.user).order_by('id').reverse()
+	user_wallet = UserWallet.objects.get(user=request.user)
 	context = {
-		'pay_history': pay_history
+		'pay_history': pay_history,
+		'user_wallet': user_wallet
 	}
 	return render (request, 'transactionhistory.html', context)
 

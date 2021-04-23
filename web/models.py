@@ -20,9 +20,16 @@ class UserWallet(models.Model):
 	user = models.OneToOneField('User', on_delete=models.CASCADE, default=None)
 	walletID = models.CharField(max_length=100, default='')
 	amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
+	prev_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
 
 	def __str__(self):
 		return self.user.first_name + ' ' + self.user.last_name
+
+@receiver(pre_save, sender=UserWallet)
+def update_amount(sender, instance, *args, **kwargs):
+	prev = instance.amount
+	instance.prev_amount + prev
+
 
 class UserManager(BaseUserManager):
 	"""
