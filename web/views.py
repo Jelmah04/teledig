@@ -58,7 +58,7 @@ def home(request):
 @login_required
 def index(request):
 	user_wallet = UserWallet.objects.get(user=request.user)
-	pay_history = PayHistory.objects.filter(user=request.user).order_by('id').reverse()[:10]
+	pay_history = PayHistory.objects.filter(user=request.user).order_by('id').reverse()[:7]
 	usernotification = UserNotification.objects.filter(user=request.user)
 	context = {
 		'user_wallet': user_wallet.amount,
@@ -409,14 +409,11 @@ def data_purchase(request):
 		amount = request.POST.get("amount", None)
 		data_plan = request.POST.get("data_plan", None)
 		wallet = UserWallet.objects.get(user=request.user)
-		print(mobile)
-		print(amount)
-		print(data_plan)
-		print(wallet.amount)
+		
 		if Decimal(amount) > wallet.amount:
 			response = {'error': 'You do not have have sufficient fund in your wallet.'}
 			return JsonResponse(response)
-		url = 'https://www.alexdata.com.ng/api/topup/'
+		url = 'https://www.alexdata.com.ng/api/data/'
 		headers = {
 			"Authorization": "Token " +settings.ALEX_DATA_KEY,
 			'Content-Type': 'application/json'
@@ -432,25 +429,25 @@ def data_purchase(request):
 		# results = x.json()['success']
 		if x.status_code == 500:
 			PayHistory.objects.create(
-				user=user, purpose="airtime", paystack_charge_id=ref_code, amount=amount, paid=False, status=False
+				user=user, purpose="datas", paystack_charge_id=ref_code, amount=amount, paid=False, status=False
 			)
 			response = {'error': "Error500: Internal Server Error"}
 			status = 'error'
 		elif 'detail' in x.json():
 			PayHistory.objects.create(
-				user=user, purpose="airtime", paystack_charge_id=ref_code, amount=amount, paid=False, status=True
+				user=user, purpose="datas", paystack_charge_id=ref_code, amount=amount, paid=False, status=True
 			)
 			response = {'error': x.json()}
 			status = 'error'
 		elif 'error' in x.json():
 			PayHistory.objects.create(
-				user=user, purpose="airtime", paystack_charge_id=ref_code, amount=amount, paid=False, status=False
+				user=user, purpose="datas", paystack_charge_id=ref_code, amount=amount, paid=False, status=False
 			)
 			response = {'error': x.json()['error']}
 			status = 'error'
 		else:
 			PayHistory.objects.create(
-				user=user, purpose="airtime", paystack_charge_id=ref_code, amount=amount, paid=True, status=True
+				user=user, purpose="datas", paystack_charge_id=ref_code, amount=amount, paid=True, status=True
 			)
 			response = {'success': x.json()['success']}
 			status = 'success'
@@ -460,7 +457,7 @@ def data_purchase(request):
 			user_wallet = UserWallet.objects.get(user=request.user)
 			user_wallet.amount -= Decimal(amount)
 			user_wallet.save()
-		data_history = DataHistory.objects.create(user=request.user, amount="300", status=status, network=network, plan=data_plan, mobile_number=mobile, transaction_id=ref_code)
+		data_history = DataHistory.objects.create(user=request.user, amount=amount, status=status, network=network, plan=data_plan, mobile_number=mobile, transaction_id=ref_code)
 		data_history.save()
 
 		return JsonResponse(response)
@@ -570,7 +567,7 @@ class Verify_Payment(APIView):
 			PayHistory.objects.create(
 				user=user, purpose="wallet",
 				paystack_charge_id=results["data"]["reference"],
-				amount=amt, paid=True, status=True
+				amount=amt, prev_amt=prev_amt, post_amt=user_wallet, paid=True, status=True
 			)
 		else:
 			user_wallet.prev_amount = prev_amt
@@ -579,7 +576,7 @@ class Verify_Payment(APIView):
 			PayHistory.objects.create(
 				user=user, purpose="wallet",
 				paystack_charge_id=results["data"]["reference"],
-				amount=amt, paid=True, status=False
+				amount=amt, prev_amt=prev_amt, post_amt=user_wallet, paid=True, status=False
 			)
 		current_wallet = UserWallet.objects.get(user=user)
 		current_wallet.amount += (results["data"]["amount"] /Decimal(100))
@@ -641,7 +638,9 @@ def transactionhistory (request):
 	user_wallet = UserWallet.objects.get(user=request.user)
 	context = {
 		'pay_history': pay_history,
-		'user_wallet': user_wallet
+		'user_wallet': user_wallet.amount,
+		'prev_amt': user_wallet.prev_amount
+		# 'user_wallet': user_wallet
 	}
 	return render (request, 'transactionhistory.html', context)
 

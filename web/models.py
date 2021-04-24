@@ -121,6 +121,8 @@ class PayHistory(models.Model):
 	paystack_charge_id = models.CharField(max_length=100, default='', blank=True)
 	paystack_access_code = models.CharField(max_length=100, default='', blank=True)
 	amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+	prev_amt = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+	post_amt = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
 	purpose = models.CharField(max_length=100, default='wallet', choices=pur)
 	status = models.CharField(max_length=100, default='')
 	paid = models.BooleanField(default=False)

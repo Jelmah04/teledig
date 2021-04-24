@@ -39,6 +39,7 @@
                                         <select id="network" onchange="getDataPlan()" class="form-control">
                                             <option selected>Choose Network</option>
                                             <option value="1">MTN NG</option>
+                                            <option value="5">MTN NG (SME)</option>
                                             <option value="2">GLO NG</option>
                                             <option value="3">9mobile</option>
                                             <option value="4">AIRTEL NG</option>
@@ -71,68 +72,208 @@
     <script>
         var mtn = [
             {
-                "dataID": "148",
-                "dataName": "500MB = ₦180 for 1 month",
+                "dataID": "153",
+                "dataName": "500MB = ₦170 for 1 month",
                 "dataAmount": "170"
             },
             {
-                "dataID": "149",
+                "dataID": "154",
                 "dataName": "1GB = ₦310 for 1 month",
                 "dataAmount": "310"
             },
             {
-                "dataID": "150",
+                "dataID": "155",
                 "dataName": "2GB = ₦620 for 1 month",
                 "dataAmount": "620"
             },
             {
-                "dataID": "152",
-                "dataName": "5GB = ₦1650 for 1 month",
-                "dataAmount": "1650"
+                "dataID": "156",
+                "dataName": "3GB = ₦930 for 1 month",
+                "dataAmount": "930"
+            },
+            {
+                "dataID": "158",
+                "dataName": "5GB = ₦1550 for 1 month",
+                "dataAmount": "1550"
+            },
+            {
+                "dataID": "163",
+                "dataName": "10GB = ₦3100 for 1 month",
+                "dataAmount": "3100"
+            },
+            {
+                "dataID": "165",
+                "dataName": "15GB = ₦4650 for 1 month",
+                "dataAmount": "4650"
+            },
+            {
+                "dataID": "166",
+                "dataName": "20GB = ₦6200 for 1 month",
+                "dataAmount": "6200"
+            },
+            {
+                "dataID": "164",
+                "dataName": "40GB = ₦12400 for 1 month",
+                "dataAmount": "12400"
             },
 
         ];
         var glo = [
             {
+                "dataID": "69",
+                "dataName": "1GB = ₦460 for 1 month",
+                "dataAmount": "460"
+            },
+            {
                 "dataID": "26",
-                "dataName": "2.3GB = ₦900 for 1 month",
-                "dataAmount": "900"
+                "dataName": "2.3GB = ₦910 for 1 month",
+                "dataAmount": "910"
+            },
+            {
+                "dataID": "32",
+                "dataName": "3.75GB = ₦1360 for 1 month",
+                "dataAmount": "1360"
             },
             {
                 "dataID": "27",
-                "dataName": "5.25GB = ₦1800 for 1 month",
-                "dataAmount": "1800"
+                "dataName": "5.25GB = ₦1810 for 1 month",
+                "dataAmount": "1810"
             },
             {
-                "dataID": "69",
-                "dataName": "1GB = ₦450 for 1 month",
-                "dataAmount": "450"
+                "dataID": "28",
+                "dataName": "7GB = ₦2260 for 1 month",
+                "dataAmount": "2260"
+            },
+            {
+                "dataID": "29",
+                "dataName": "9GB = ₦2710 for 1 month",
+                "dataAmount": "2710"
             },
 
         ];
         var airtel = [
+            {
+                "dataID": "40",
+                "dataName": "750MB = ₦490 for 1 month",
+                "dataAmount": "490"
+            },
             {
                 "dataID": "18",
                 "dataName": "1.5GB = ₦950 for 1 month",
                 "dataAmount": "950"
             },
             {
+                "dataID": "46",
+                "dataName": "2GB = ₦1165 for 1 month",
+                "dataAmount": "1165"
+            },
+            {
+                "dataID": "45",
+                "dataName": "3GB = ₦1460 for 1 month",
+                "dataAmount": "1460"
+            },
+            {
                 "dataID": "19",
                 "dataName": "4.5GB = ₦1820 for 1 month",
                 "dataAmount": "1820"
             },
+            {
+                "dataID": "23",
+                "dataName": "6.0GB = ₦2410 for 1 month",
+                "dataAmount": "2410"
+            },
+            {
+                "dataID": "24",
+                "dataName": "11GB = ₦3850 for 1 month",
+                "dataAmount": "3850"
+            },
+            {
+                "dataID": "75",
+                "dataName": "40GB = ₦9610 for 1 month",
+                "dataAmount": "9610"
+            },
+            {
+                "dataID": "76",
+                "dataName": "75GB = ₦14410 for 1 month",
+                "dataAmount": "14410"
+            },
+            {
+                "dataID": "77",
+                "dataName": "110GB = ₦19210 for 1 month",
+                "dataAmount": "19210"
+            },
+
         ];
         var etisalat = [
             {
+                "dataID": "53",
+                "dataName": "500MB = ₦490 for 1 month",
+                "dataAmount": "490"
+            },
+            {
                 "dataID": "13",
-                "dataName": "1.5GB = ₦900 for 1 month",
-                "dataAmount": "900"
+                "dataName": "1.5GB = ₦970 for 1 month",
+                "dataAmount": "970"
             },
             {
                 "dataID": "14",
-                "dataName": "2GB = ₦1080 for 1 month",
-                "dataAmount": "1080"
+                "dataName": "2GB = ₦1162 for 1 month",
+                "dataAmount": "1162"
             },
+            {
+                "dataID": "15",
+                "dataName": "3GB = ₦1450 for 1 month",
+                "dataAmount": "1450"
+            },
+            {
+                "dataID": "71",
+                "dataName": "4.5GB = ₦1930 for 1 month",
+                "dataAmount": "1930"
+            },
+            {
+                "dataID": "72",
+                "dataName": "11GB = ₦3850 for 1 month",
+                "dataAmount": "3850"
+            },
+            {
+                "dataID": "74",
+                "dataName": "15GB = ₦4810 for 1 month",
+                "dataAmount": "4810"
+            },
+            {
+                "dataID": "73",
+                "dataName": "40GB = ₦9610 for 1 month",
+                "dataAmount": "9610"
+            },
+
+        ];
+        var mtnsme = [
+            {
+                "dataID": "148",
+                "dataName": "SME 500MB = ₦170 for 1 month",
+                "dataAmount": "170"
+            },
+            {
+                "dataID": "149",
+                "dataName": "SME 1GB = ₦310 for 1 month",
+                "dataAmount": "310"
+            },
+            {
+                "dataID": "150",
+                "dataName": "SME 2GB = ₦620 for 1 month",
+                "dataAmount": "620"
+            },
+            {
+                "dataID": "151",
+                "dataName": "SME 3GB = ₦930 for 1 month",
+                "dataAmount": "930"
+            },
+            {
+                "dataID": "152",
+                "dataName": "SME 5GB = ₦1550 for 1 month",
+                "dataAmount": "1550"
+            },
+
         ];
         function getDataPlan() {
             if (document.getElementById("network").value == "1"){
@@ -169,6 +310,15 @@
                     // POPULATE SELECT ELEMENT WITH JSON.
                     ele.innerHTML = ele.innerHTML +
                         '<option value="' + etisalat[i]['dataID'] + '" code="' + etisalat[i]['dataAmount'] + '">' + etisalat[i]['dataName'] + '</option>';
+                }
+            }
+            else if (document.getElementById("network").value == "5"){
+                var ele = document.getElementById('dataPlan');
+                ele.options.length = 0;
+                for (var i = 0; i < mtnsme.length; i++) {
+                    // POPULATE SELECT ELEMENT WITH JSON.
+                    ele.innerHTML = ele.innerHTML +
+                        '<option value="' + mtnsme[i]['dataID'] + '" code="' + mtnsme[i]['dataAmount'] + '">' + mtnsme[i]['dataName'] + '</option>';
                 }
             }
             else{
