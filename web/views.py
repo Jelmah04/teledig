@@ -792,7 +792,7 @@ def Notify(request):
 
 	return JsonResponse(response)
 
-def manual_funding(request):
+def manualfunding(request):
 	return render (request, 'manual_funding.html')
 
 def all_notifications(request):
