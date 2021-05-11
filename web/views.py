@@ -41,6 +41,9 @@ client = Client(settings.TWILIO_SID, settings.TWILIO_AUTH_TOKEN)
 def gen_token(length=64, charset="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@$%-_"):
 	return "".join([secrets.choice(charset) for _ in range(0, length)])
 
+def gen_ref(length=12, charset="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-"):
+	return "".join([secrets.choice(charset) for _ in range(0, length)])
+
 NUMERIC_CHARS = string.digits
 STRING_LENGTH = 7
 
@@ -423,31 +426,50 @@ def data_purchase(request):
 			"mobile_number": mobile,
 			"plan": data_plan
 		}
-		x = requests.post(url, headers=headers, data=json.dumps(datum))
+		x = requests.post(url, data=json.dumps(datum), headers=headers)
 		ref_code = 'REFNO'+secrets.token_hex(7)
+
+		user_wallet = UserWallet.objects.get(user=user)
+		current_amount = user_wallet.prev_amount
 		
 		# results = x.json()['success']
 		if x.status_code == 500:
 			PayHistory.objects.create(
+<<<<<<< HEAD
 				user=user, purpose="datas", paystack_charge_id=ref_code, amount=amount, paid=False, status=False
+=======
+				user=user, purpose="airtime", paystack_charge_id=ref_code, prev_amount=current_amount, amount=amount, paid=False, status=False
+>>>>>>> af85dc60a98ec52175695ca28a7b6375b0a8b8cc
 			)
 			response = {'error': "Error500: Internal Server Error"}
 			status = 'error'
 		elif 'detail' in x.json():
 			PayHistory.objects.create(
+<<<<<<< HEAD
 				user=user, purpose="datas", paystack_charge_id=ref_code, amount=amount, paid=False, status=True
+=======
+				user=user, purpose="airtime", paystack_charge_id=ref_code, prev_amount=current_amount, amount=amount, paid=False, status=True
+>>>>>>> af85dc60a98ec52175695ca28a7b6375b0a8b8cc
 			)
 			response = {'error': x.json()}
 			status = 'error'
 		elif 'error' in x.json():
 			PayHistory.objects.create(
+<<<<<<< HEAD
 				user=user, purpose="datas", paystack_charge_id=ref_code, amount=amount, paid=False, status=False
+=======
+				user=user, purpose="airtime", paystack_charge_id=ref_code, prev_amount=current_amount, amount=amount, paid=False, status=False
+>>>>>>> af85dc60a98ec52175695ca28a7b6375b0a8b8cc
 			)
 			response = {'error': x.json()['error']}
 			status = 'error'
 		else:
 			PayHistory.objects.create(
+<<<<<<< HEAD
 				user=user, purpose="datas", paystack_charge_id=ref_code, amount=amount, paid=True, status=True
+=======
+				user=user, purpose="airtime", paystack_charge_id=ref_code, prev_amount=current_amount, amount=amount, paid=True, status=True
+>>>>>>> af85dc60a98ec52175695ca28a7b6375b0a8b8cc
 			)
 			response = {'success': x.json()['success']}
 			status = 'success'
@@ -487,24 +509,26 @@ def airtime_purchase(request):
 		}
 		x = requests.post(url, headers=headers, data=json.dumps(datum))
 		ref_code = 'REFNO'+secrets.token_hex(7)
+		user_wallet = UserWallet.objects.get(user=user)
+		current_amount = user_wallet.prev_amount
 		
 		# results = x.json()['success']
 		if 'error' in x.json():
 			PayHistory.objects.create(
-				user=user, purpose="airtime", paystack_charge_id=ref_code, amount=amount, paid=False, status=False
+				user=user, purpose="airtime", paystack_charge_id=ref_code, prev_amount=current_amount, amount=amount, paid=False, status=False
 			)
 			response = {'error': x.json()['error']}
 			status = "error"
 		else:
 			PayHistory.objects.create(
-				user=user, purpose="airtime", paystack_charge_id=x.json()['id'], amount=amount, paid=True, status=True
+				user=user, purpose="airtime", paystack_charge_id=x.json()['id'], prev_amount=current_amount, amount=amount, paid=True, status=True
 			)
 			response = {'good': 'You have successfully recharged '+x.json()['mobile_number']}
 			status = "success"
 			user_wallet = UserWallet.objects.get(user=request.user)
 			user_wallet.amount -= Decimal(amount)
 			user_wallet.save()
-		airtime_history = AirtimeHistory.objects.create(user=request.user, amount=amount, status=status, network=network, mobile_number=mobile, transaction_id=x.json()['id'])
+		airtime_history = AirtimeHistory.objects.create(user=request.user, prev_amount=current_amount, amount=amount, status=status, network=network, mobile_number=mobile, transaction_id=x.json()['id'])
 		# airtime_history.save()
 		return JsonResponse(response)
 
@@ -811,3 +835,34 @@ def single_notification(request, pk):
 		'notification': notification
 	}
 	return render(request, 'read-notification.html', context)
+
+
+def gen_ussd(request):
+	if request.is_ajax():
+		bank = request.POST.get("bank", None)
+		amount = request.POST.get("amount", None)
+		email = request.user.email
+		tx_ref = gen_ref()
+		fullname = request.user.first_name + ' ' + request.user.last_name
+		phone_number = request.user.mobile
+
+		url = 'https://api.flutterwave.com/v3/charges?type=ussd'
+		headers = {
+			"Authorization": "Bearer "+settings.FLUTTERWAVE_SECRET_KEY,
+			"Content-Type": "application/json"
+		}
+		payload = {
+			"tx_ref": "AH"+tx_ref,
+			"email": email,
+			"amount": amount,
+			"account_bank": bank,
+			"currency": "NGN",
+			"phone_number": phone_number,
+			"fullname": fullname,
+		}
+		x = requests.post(url, data=json.dumps(payload), headers=headers)
+		if x.json()['status'] != "success":
+			return False
+		results = x.json()
+		response = {"message": results["message"], "ussd_code": results["meta"]["authorization"]["note"]}
+		return JsonResponse(response)
