@@ -28,6 +28,7 @@ SECRET_KEY = 'uifakkma7epple%p+7ak_bd$i+!^xuw8ojte&sh^uw=#r)t(7g'
 DEBUG = True
 
 ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = ["3.143.235.142"]
 # ALLOWED_HOSTS = ["81174dcffeb6.ngrok.io"]
 # ALLOWED_HOSTS = ["agentshub.herokuapp.com", "127.0.0.1"]
 
@@ -133,6 +134,7 @@ LOGOUT_REDIRECT_URL = '/'
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') 
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static/') 
 STATIC_URL = '/static/'
 
 
