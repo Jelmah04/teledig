@@ -435,41 +435,25 @@ def data_purchase(request):
 		# results = x.json()['success']
 		if x.status_code == 500:
 			PayHistory.objects.create(
-<<<<<<< HEAD
-				user=user, purpose="datas", paystack_charge_id=ref_code, amount=amount, paid=False, status=False
-=======
 				user=user, purpose="airtime", paystack_charge_id=ref_code, prev_amount=current_amount, amount=amount, paid=False, status=False
->>>>>>> af85dc60a98ec52175695ca28a7b6375b0a8b8cc
 			)
 			response = {'error': "Error500: Internal Server Error"}
 			status = 'error'
 		elif 'detail' in x.json():
 			PayHistory.objects.create(
-<<<<<<< HEAD
-				user=user, purpose="datas", paystack_charge_id=ref_code, amount=amount, paid=False, status=True
-=======
 				user=user, purpose="airtime", paystack_charge_id=ref_code, prev_amount=current_amount, amount=amount, paid=False, status=True
->>>>>>> af85dc60a98ec52175695ca28a7b6375b0a8b8cc
 			)
 			response = {'error': x.json()}
 			status = 'error'
 		elif 'error' in x.json():
 			PayHistory.objects.create(
-<<<<<<< HEAD
-				user=user, purpose="datas", paystack_charge_id=ref_code, amount=amount, paid=False, status=False
-=======
 				user=user, purpose="airtime", paystack_charge_id=ref_code, prev_amount=current_amount, amount=amount, paid=False, status=False
->>>>>>> af85dc60a98ec52175695ca28a7b6375b0a8b8cc
 			)
 			response = {'error': x.json()['error']}
 			status = 'error'
 		else:
 			PayHistory.objects.create(
-<<<<<<< HEAD
-				user=user, purpose="datas", paystack_charge_id=ref_code, amount=amount, paid=True, status=True
-=======
 				user=user, purpose="airtime", paystack_charge_id=ref_code, prev_amount=current_amount, amount=amount, paid=True, status=True
->>>>>>> af85dc60a98ec52175695ca28a7b6375b0a8b8cc
 			)
 			response = {'success': x.json()['success']}
 			status = 'success'
@@ -866,3 +850,6 @@ def gen_ussd(request):
 		results = x.json()
 		response = {"message": results["message"], "ussd_code": results["meta"]["authorization"]["note"]}
 		return JsonResponse(response)
+
+def manual_funding (request):
+	return render (request, 'manual_funding.html')
